@@ -1,0 +1,68 @@
+Model: "CatDogModel"
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #
+=================================================================
+input_1 (InputLayer)         [(None, 64, 64, 3)]       0
+_________________________________________________________________
+zero_padding2d (ZeroPadding2 (None, 70, 70, 3)         0
+_________________________________________________________________
+conv2D_0 (Conv2D)            (None, 64, 64, 32)        4736
+_________________________________________________________________
+bn_0 (BatchNormalization)    (None, 64, 64, 32)        128
+_________________________________________________________________
+activation (Activation)      (None, 64, 64, 32)        0
+_________________________________________________________________
+max_pool_0 (MaxPooling2D)    (None, 32, 32, 32)        0
+_________________________________________________________________
+dropout (Dropout)            (None, 32, 32, 32)        0
+_________________________________________________________________
+conv2D_1 (Conv2D)            (None, 26, 26, 64)        100416
+_________________________________________________________________
+bn_1 (BatchNormalization)    (None, 26, 26, 64)        256
+_________________________________________________________________
+activation_1 (Activation)    (None, 26, 26, 64)        0
+_________________________________________________________________
+max_pool_1 (MaxPooling2D)    (None, 13, 13, 64)        0
+_________________________________________________________________
+dropout_1 (Dropout)          (None, 13, 13, 64)        0
+_________________________________________________________________
+flatten (Flatten)            (None, 10816)             0
+_________________________________________________________________
+fc (Dense)                   (None, 2)                 21634
+=================================================================
+Total params: 127,170
+Trainable params: 126,978
+Non-trainable params: 192
+_________________________________________________________________
+Epoch 1/10
+19/19 [==============================] - 3s 164ms/step - loss: 2.2629 - accuracy: 0.4750
+Epoch 2/10
+19/19 [==============================] - 3s 165ms/step - loss: 0.7671 - accuracy: 0.5833
+Epoch 3/10
+19/19 [==============================] - 3s 167ms/step - loss: 0.7033 - accuracy: 0.6400
+Epoch 4/10
+19/19 [==============================] - 3s 165ms/step - loss: 0.6627 - accuracy: 0.6717
+Epoch 5/10
+19/19 [==============================] - 3s 165ms/step - loss: 0.6488 - accuracy: 0.7033
+Epoch 6/10
+19/19 [==============================] - 3s 166ms/step - loss: 0.5832 - accuracy: 0.7150
+Epoch 7/10
+19/19 [==============================] - 3s 165ms/step - loss: 0.5041 - accuracy: 0.7533
+Epoch 8/10
+19/19 [==============================] - 3s 165ms/step - loss: 0.4399 - accuracy: 0.7933
+Epoch 9/10
+19/19 [==============================] - 3s 169ms/step - loss: 0.4244 - accuracy: 0.8183
+Epoch 10/10
+19/19 [==============================] - 3s 165ms/step - loss: 0.4789 - accuracy: 0.7817
+2020-07-07 21:53:34.093546: W tensorflow/python/util/util.cc:329] Sets are not currently considered sequences, but this may change in the future, so consider avoiding using them.
+WARNING:tensorflow:From /Users/victorshih/Documents/Kaggle/venv/lib/python3.8/site-packages/tensorflow/python/ops/resource_variable_ops.py:1813: calling BaseResourceVariable.__init__ (from tensorflow.python.ops.resource_variable_ops) with constraint is deprecated and will be removed in a future version.
+Instructions for updating:
+If using Keras pass *_constraint arguments to layers.
+7/7 [==============================] - 0s 28ms/step - loss: 0.7686 - accuracy: 0.5800
+
+Loss = 0.768589198589325
+CV Accuracy = 0.5799999833106995
+
+with 1 dropout .1
+Loss = 0.8557919859886169
+CV Accuracy = 0.6349999904632568

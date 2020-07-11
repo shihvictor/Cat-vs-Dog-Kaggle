@@ -1,0 +1,68 @@
+Model: "CatDogModel"
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #
+=================================================================
+input_1 (InputLayer)         [(None, 64, 64, 3)]       0
+_________________________________________________________________
+zero_padding2d (ZeroPadding2 (None, 68, 68, 3)         0
+_________________________________________________________________
+conv2D_0 (Conv2D)            (None, 64, 64, 32)        2432
+_________________________________________________________________
+bn_0 (BatchNormalization)    (None, 64, 64, 32)        128
+_________________________________________________________________
+activation (Activation)      (None, 64, 64, 32)        0
+_________________________________________________________________
+max_pool_0 (MaxPooling2D)    (None, 32, 32, 32)        0
+_________________________________________________________________
+conv2D_1 (Conv2D)            (None, 28, 28, 64)        51264
+_________________________________________________________________
+bn_1 (BatchNormalization)    (None, 28, 28, 64)        256
+_________________________________________________________________
+activation_1 (Activation)    (None, 28, 28, 64)        0
+_________________________________________________________________
+max_pool_1 (MaxPooling2D)    (None, 14, 14, 64)        0
+_________________________________________________________________
+conv2D_2 (Conv2D)            (None, 10, 10, 128)       204928
+_________________________________________________________________
+bn_2 (BatchNormalization)    (None, 10, 10, 128)       512
+_________________________________________________________________
+activation_2 (Activation)    (None, 10, 10, 128)       0
+_________________________________________________________________
+max_pool_2 (MaxPooling2D)    (None, 5, 5, 128)         0
+_________________________________________________________________
+flatten (Flatten)            (None, 3200)              0
+_________________________________________________________________
+fc (Dense)                   (None, 2)                 6402
+=================================================================
+Total params: 265,922
+Trainable params: 265,474
+Non-trainable params: 448
+_________________________________________________________________
+Epoch 1/10
+469/469 [==============================] - 77s 165ms/step - loss: 0.6614 - accuracy: 0.6628
+Epoch 2/10
+469/469 [==============================] - 81s 172ms/step - loss: 0.5245 - accuracy: 0.7485
+Epoch 3/10
+469/469 [==============================] - 75s 161ms/step - loss: 0.4649 - accuracy: 0.7809
+Epoch 4/10
+469/469 [==============================] - 75s 161ms/step - loss: 0.3958 - accuracy: 0.8192
+Epoch 5/10
+469/469 [==============================] - 75s 161ms/step - loss: 0.3385 - accuracy: 0.8501
+Epoch 6/10
+469/469 [==============================] - 80s 171ms/step - loss: 0.2966 - accuracy: 0.8721
+Epoch 7/10
+469/469 [==============================] - 84s 180ms/step - loss: 0.2393 - accuracy: 0.8991
+Epoch 8/10
+469/469 [==============================] - 82s 175ms/step - loss: 0.1801 - accuracy: 0.9277
+Epoch 9/10
+469/469 [==============================] - 83s 177ms/step - loss: 0.1408 - accuracy: 0.9442
+Epoch 10/10
+469/469 [==============================] - 81s 174ms/step - loss: 0.1037 - accuracy: 0.9627
+2020-07-08 14:32:12.342358: W tensorflow/python/util/util.cc:329] Sets are not currently considered sequences, but this may change in the future, so consider avoiding using them.
+WARNING:tensorflow:From /Users/victorshih/Documents/Kaggle/venv/lib/python3.8/site-packages/tensorflow/python/ops/resource_variable_ops.py:1813: calling BaseResourceVariable.__init__ (from tensorflow.python.ops.resource_variable_ops) with constraint is deprecated and will be removed in a future version.
+Instructions for updating:
+If using Keras pass *_constraint arguments to layers.
+157/157 [==============================] - 5s 34ms/step - loss: 0.7244 - accuracy: 0.7844
+
+Loss = 0.7244315147399902
+CV Accuracy = 0.7843999862670898
