@@ -164,76 +164,77 @@ def model(input_shape):
 #         return (X_data[0:int(M*.8), :])
 
 
+def plot_Acc_And_Loss(history_dict):
+    """
+
+    :return:
+    """
+    plt.plot(history_dict['accuracy'])
+    plt.plot(history_dict['val_accuracy'])
+    plt.title('model accuracy')
+    plt.ylabel('accuracy')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'val'], loc='upper left')
+    plt.show()
+
+    plt.plot(history_dict['loss'])
+    plt.plot(history_dict['val_loss'])
+    plt.title('model loss')
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'val'], loc='upper left')
+    plt.show()
+
+
 """ LOAD DATA """
-# Either have (1) or (2) commented.
+# === Either have (1) or (2) commented.
 # X_data, Y_data = create_train_data()  # (1)
-# If train data npy file already created, load it instead.
+# === If train data .npy file already created, load it instead.
 X_data = np.load('datasets/X_train_data.npy')   #(2)
 Y_data = np.load('datasets/Y_train_data.npy')   #(2)
 
-
 M = X_data.shape[0]
-# X_test = X_data[int(M*.8):, :]
-# Y_test = Y_data[int(M*.8):, :]
 X_train = X_data[0:int(M*.8), :]    # Train and cv data
 Y_train = Y_data[0:int(M*.8), :]
+X_test = X_data[int(M*.8):, :]
+Y_test = Y_data[int(M*.8):, :]
 print("number of training examples : " + str(X_train.shape[0]))
-# print("number of cv examples : " + str(X_cv.shape[0]))
+print("number of test examples : " + str(X_test.shape[0]))
 print("X_train shape : " + str(X_train.shape))
 print("Y_train shape : " + str(Y_train.shape))
-# print("X_cv shape : " + str(X_cv.shape))
-# print("Y_cv shape : " + str(Y_cv.shape))
+print("X_test shape : " + str(X_test.shape))
+print("Y_test shape : " + str(Y_test.shape))
+
 
 """Compile Model"""
-cat_dog_model = model(X_train.shape[1:])
-cat_dog_model.summary()
-cat_dog_model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+# cat_dog_model = model(X_train.shape[1:])
+# cat_dog_model.summary()
+# cat_dog_model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+
 
 """Train the model"""
 MODEL_NAME = 'my_model_9'
-model_history = cat_dog_model.fit(x=X_train, y=Y_train, batch_size=32, epochs=15, validation_split=.2, shuffle=True)
+# model_history = cat_dog_model.fit(x=X_train, y=Y_train, batch_size=32, epochs=15, validation_split=.2, shuffle=True)  # val split should be .25
 #=== save the model ===
-cat_dog_model.save(filepath='model/'+MODEL_NAME)
+# cat_dog_model.save(filepath='model/'+MODEL_NAME)
 #=== Or load the model ===
-# cat_dog_model = keras.models.load_model('model/my_model_6')
+cat_dog_model = keras.models.load_model('model/'+MODEL_NAME)
 
 """Save model history and plot lost and acc"""
-with open('model/'+MODEL_NAME+'/trainHistoryDict', 'wb') as file_name: # opens file from /test1 and saves to file_pi
-    pickle.dump(model_history.history, file_name) # saves history to path file_pi
-
-print(model_history.history.keys())
-plt.plot(model_history.history['accuracy'])
-plt.plot(model_history.history['val_accuracy'])
-plt.title('model accuracy')
-plt.ylabel('accuracy')
-plt.xlabel('epoch')
-plt.legend(['train', 'val'], loc='upper left')
-plt.show()
-
-plt.plot(model_history.history['loss'])
-plt.plot(model_history.history['val_loss'])
-plt.title('model loss')
-plt.ylabel('loss')
-plt.xlabel('epoch')
-plt.legend(['train', 'val'], loc='upper left')
-plt.show()
-
-
-"""Load model history and plot lost and acc"""
-# with open('model/my_model_6/trainHistoryDict', 'rb') as file_name:
-#     model_history = pickle.load(file_name)
+# with open('model/'+MODEL_NAME+'/trainHistoryDict', 'wb') as file_name: # opens file from /test1 and saves to file_pi
+#     pickle.dump(model_history.history, file_name) # saves history to path file_pi
 #
-# print(model_history.keys())
-# plt.plot(model_history['accuracy'])
-# plt.plot(model_history['val_accuracy'])
+# print(model_history.history.keys())
+# plt.plot(model_history.history['accuracy'])
+# plt.plot(model_history.history['val_accuracy'])
 # plt.title('model accuracy')
 # plt.ylabel('accuracy')
 # plt.xlabel('epoch')
 # plt.legend(['train', 'val'], loc='upper left')
 # plt.show()
 #
-# plt.plot(model_history['loss'])
-# plt.plot(model_history['val_loss'])
+# plt.plot(model_history.history['loss'])
+# plt.plot(model_history.history['val_loss'])
 # plt.title('model loss')
 # plt.ylabel('loss')
 # plt.xlabel('epoch')
@@ -241,8 +242,47 @@ plt.show()
 # plt.show()
 
 
-# Eval model on cv
-# preds = cat_dog_model.evaluate(X_cv, Y_cv, batch_size=32, verbose=1, sample_weight=None)
-# print()
-# print ("Loss = " + str(preds[0]))
-# print ("CV Accuracy = " + str(preds[1]))
+"""Load model history and plot lost and acc"""
+with open('model/'+MODEL_NAME+'/trainHistoryDict', 'rb') as file_name:
+    model_history = pickle.load(file_name)
+
+# print(model_history.keys())
+plt.plot(model_history['accuracy'])
+plt.plot(model_history['val_accuracy'])
+plt.title('model accuracy')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'val'], loc='upper left')
+plt.show()
+
+plt.plot(model_history['loss'])
+plt.plot(model_history['val_loss'])
+plt.title('model loss')
+plt.ylabel('loss')
+plt.xlabel('epoch')
+plt.legend(['train', 'val'], loc='upper left')
+plt.show()
+
+
+print('\n@> Evaluating model')
+results = cat_dog_model.evaluate(X_test, Y_test, batch_size=32, verbose=1)
+print ("Loss = " + str(results[0]))
+print ("Test Accuracy = " + str(results[1]))
+
+
+print('\n@> Predicting Test Data')
+NUM_OF_PRED = 10
+pred = cat_dog_model.predict(X_test[:NUM_OF_PRED])
+
+for i in range(NUM_OF_PRED):
+    x = X_test[i]
+    p = pred[i]
+    plt.imshow(x)
+    if p[0] > p[1]:
+        plt.title("{:.4%} cat | {:.4%} dog -> CAT".format(p[0], p[1]))
+    else:
+        plt.title("{:.4%} cat | {:.4%} dog -> DOG".format(p[0], p[1]))
+
+    plt.show()
+
+
