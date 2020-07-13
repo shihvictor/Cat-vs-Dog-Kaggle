@@ -118,21 +118,21 @@ def model(input_shape):
 
     # Block1
     X = Conv2D(filters=32, kernel_size=(5, 5), strides=1, name='conv2D_0')(X)
-    # X = BatchNormalization(axis=3, name='bn_0')(X)
+    X = BatchNormalization(axis=3, name='bn_0')(X)
     X = Activation(activation='relu')(X)
     X = MaxPooling2D(pool_size=(2, 2), name='max_pool_0')(X)
     # X = Dropout(rate=.2)(X)
 
     # Block2
     X = Conv2D(filters=64, kernel_size=(5, 5), strides=1, name='conv2D_1')(X)
-    # X = BatchNormalization(axis=3, name='bn_1')(X)
+    X = BatchNormalization(axis=3, name='bn_1')(X)
     X = Activation(activation='relu')(X)
     X = MaxPooling2D(pool_size=(2, 2), name='max_pool_1')(X)
     # X = Dropout(rate=.2)(X)
 
     # Block3
     X = Conv2D(filters=128, kernel_size=(5, 5), strides=1, name='conv2D_2')(X)
-    # X = BatchNormalization(axis=3, name='bn_2')(X)
+    X = BatchNormalization(axis=3, name='bn_2')(X)
     X = Activation(activation='relu')(X)
     X = MaxPooling2D(pool_size=(2, 2), name='max_pool_2')(X)
     # X = Dropout(rate=.2)(X)
@@ -173,13 +173,9 @@ Y_data = np.load('datasets/Y_train_data.npy')   #(2)
 
 
 M = X_data.shape[0]
-# X_train = X_data[0:int(M*.6), :]
-# Y_train = Y_data[0:int(M*.6), :]
-# X_cv = X_data[int(M*.6):int(M*.8), :]
-# Y_cv = Y_data[int(M*.6):int(M*.8), :]
 # X_test = X_data[int(M*.8):, :]
 # Y_test = Y_data[int(M*.8):, :]
-X_train = X_data[0:int(M*.8), :]
+X_train = X_data[0:int(M*.8), :]    # Train and cv data
 Y_train = Y_data[0:int(M*.8), :]
 print("number of training examples : " + str(X_train.shape[0]))
 # print("number of cv examples : " + str(X_cv.shape[0]))
@@ -194,7 +190,7 @@ cat_dog_model.summary()
 cat_dog_model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
 """Train the model"""
-MODEL_NAME = 'my_model_8'
+MODEL_NAME = 'my_model_9'
 model_history = cat_dog_model.fit(x=X_train, y=Y_train, batch_size=32, epochs=15, validation_split=.2, shuffle=True)
 #=== save the model ===
 cat_dog_model.save(filepath='model/'+MODEL_NAME)
