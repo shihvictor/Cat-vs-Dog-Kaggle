@@ -8,9 +8,12 @@ from skimage.transform import resize
 from keras import layers
 from keras.layers import Input, ZeroPadding2D, Conv2D, MaxPooling2D, Dropout, Flatten, Dense, Activation, BatchNormalization
 from keras.models import Model
+from keras.optimizers import Adam
 import tensorflow as tf
 from tensorflow import keras
 import pickle
+from Model12 import model12
+
 
 TRAIN_DIR = 'datasets/train'
 TEST_DIR = 'datasets/test'
@@ -193,34 +196,40 @@ def plot_Acc_And_Loss(history_dict):
 X_data = np.load('datasets/X_train_data.npy')   #(2)
 Y_data = np.load('datasets/Y_train_data.npy')   #(2)
 
+
+""" PARTITION DATA """
 M = X_data.shape[0]
 X_train = X_data[0:int(M*.8), :]    # Train and cv data
 Y_train = Y_data[0:int(M*.8), :]
-X_test = X_data[int(M*.8):, :]
-Y_test = Y_data[int(M*.8):, :]
+X_val = X_data[int(M*.8):, :]
+Y_val = Y_data[int(M*.8):, :]
+
 print("number of training examples : " + str(X_train.shape[0]))
-print("number of test examples : " + str(X_test.shape[0]))
+print("number of test examples : " + str(X_val.shape[0]))
 print("X_train shape : " + str(X_train.shape))
 print("Y_train shape : " + str(Y_train.shape))
-print("X_test shape : " + str(X_test.shape))
-print("Y_test shape : " + str(Y_test.shape))
+print("X_test shape : " + str(X_val.shape))
+print("Y_test shape : " + str(Y_val.shape))
+
 
 """CHANGE THESE TO SWITCH BETWEEN TRAINING AND LOADING"""
 NEW_MODEL = True
-MODEL_NAME = 'my_model_11'
+MODEL_NAME = 'my_model_11a'
 
 
 # Compile, Train, Save, Plot
 if NEW_MODEL:
     """Compile Model"""
     cat_dog_model = model(X_train.shape[1:])
+    # cat_dog_model = model12(X_train.shape[1:])
     cat_dog_model.summary()
-    cat_dog_model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+    # !!! change learning rate of Adam
+    opt = Adam(learning_rate=.0001)
+    cat_dog_model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
 
 
     """Train the model"""
-    # may have to use own CV set instead of using validation_split.
-    model_history = cat_dog_model.fit(x=X_train, y=Y_train, batch_size=32, epochs=15, validation_split=.2, shuffle=True)  # val split should be .25
+    model_history = cat_dog_model.fit(x=X_train, y=Y_train, batch_size=32, epochs=15, validation_data=(X_val, Y_val), shuffle=True)  # val split should be .25
     #=== save the model ===
     cat_dog_model.save(filepath='model/'+MODEL_NAME)
 #=== Or load the model ===
@@ -233,27 +242,11 @@ if NEW_MODEL:
     plot_Acc_And_Loss(model_history.history)
 
 
-
 """Load model history and plot lost and acc"""
 # with open('model/'+MODEL_NAME+'/trainHistoryDict', 'rb') as file_name:
 #     model_history = pickle.load(file_name)
-#
-# # print(model_history.keys())
-# plt.plot(model_history['accuracy'])
-# plt.plot(model_history['val_accuracy'])
-# plt.title('model accuracy')
-# plt.ylabel('accuracy')
-# plt.xlabel('epoch')
-# plt.legend(['train', 'val'], loc='upper left')
-# plt.show()
-#
-# plt.plot(model_history['loss'])
-# plt.plot(model_history['val_loss'])
-# plt.title('model loss')
-# plt.ylabel('loss')
-# plt.xlabel('epoch')
-# plt.legend(['train', 'val'], loc='upper left')
-# plt.show()
+# plot_Acc_And_Loss(model_history)
+
 
 
 # print('\n@> Evaluating model')
