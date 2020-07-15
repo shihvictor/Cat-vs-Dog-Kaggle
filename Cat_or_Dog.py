@@ -121,21 +121,21 @@ def model(input_shape):
     X = BatchNormalization(axis=3, name='bn_0')(X)
     X = Activation(activation='relu')(X)
     X = MaxPooling2D(pool_size=(2, 2), name='max_pool_0')(X)
-    # X = Dropout(rate=.2)(X)
+    X = Dropout(rate=.2)(X)
 
     # Block2
     X = Conv2D(filters=64, kernel_size=(5, 5), strides=1, name='conv2D_1')(X)
     X = BatchNormalization(axis=3, name='bn_1')(X)
     X = Activation(activation='relu')(X)
     X = MaxPooling2D(pool_size=(2, 2), name='max_pool_1')(X)
-    # X = Dropout(rate=.2)(X)
+    X = Dropout(rate=.2)(X)
 
     # Block3
     X = Conv2D(filters=128, kernel_size=(5, 5), strides=1, name='conv2D_2')(X)
     X = BatchNormalization(axis=3, name='bn_2')(X)
     X = Activation(activation='relu')(X)
     X = MaxPooling2D(pool_size=(2, 2), name='max_pool_2')(X)
-    # X = Dropout(rate=.2)(X)
+    X = Dropout(rate=.2)(X)
 
     # Flatten output of ReLU block
     X = Flatten()(X)
@@ -166,7 +166,7 @@ def model(input_shape):
 
 def plot_Acc_And_Loss(history_dict):
     """
-
+    Plots loss and accuracy of train and val data over epochs.
     :return:
     """
     plt.plot(history_dict['accuracy'])
@@ -205,36 +205,50 @@ print("Y_train shape : " + str(Y_train.shape))
 print("X_test shape : " + str(X_test.shape))
 print("Y_test shape : " + str(Y_test.shape))
 
-
-"""Compile Model"""
-# cat_dog_model = model(X_train.shape[1:])
-# cat_dog_model.summary()
-# cat_dog_model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+"""CHANGE THESE TO SWITCH BETWEEN TRAINING AND LOADING"""
+NEW_MODEL = True
+MODEL_NAME = 'my_model_11'
 
 
-"""Train the model"""
-MODEL_NAME = 'my_model_9'
-# model_history = cat_dog_model.fit(x=X_train, y=Y_train, batch_size=32, epochs=15, validation_split=.2, shuffle=True)  # val split should be .25
-#=== save the model ===
-# cat_dog_model.save(filepath='model/'+MODEL_NAME)
+# Compile, Train, Save, Plot
+if NEW_MODEL:
+    """Compile Model"""
+    cat_dog_model = model(X_train.shape[1:])
+    cat_dog_model.summary()
+    cat_dog_model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+
+
+    """Train the model"""
+    # may have to use own CV set instead of using validation_split.
+    model_history = cat_dog_model.fit(x=X_train, y=Y_train, batch_size=32, epochs=15, validation_split=.2, shuffle=True)  # val split should be .25
+    #=== save the model ===
+    cat_dog_model.save(filepath='model/'+MODEL_NAME)
 #=== Or load the model ===
-cat_dog_model = keras.models.load_model('model/'+MODEL_NAME)
+# cat_dog_model = keras.models.load_model('model/'+MODEL_NAME)
 
-"""Save model history and plot lost and acc"""
-# with open('model/'+MODEL_NAME+'/trainHistoryDict', 'wb') as file_name: # opens file from /test1 and saves to file_pi
-#     pickle.dump(model_history.history, file_name) # saves history to path file_pi
+
+    """Save model history and plot loss and acc"""
+    with open('model/'+MODEL_NAME+'/trainHistoryDict', 'wb') as file_name: # opens file from /test1 and saves to file_pi
+        pickle.dump(model_history.history, file_name) # saves history to path file_pi
+    plot_Acc_And_Loss(model_history.history)
+
+
+
+"""Load model history and plot lost and acc"""
+# with open('model/'+MODEL_NAME+'/trainHistoryDict', 'rb') as file_name:
+#     model_history = pickle.load(file_name)
 #
-# print(model_history.history.keys())
-# plt.plot(model_history.history['accuracy'])
-# plt.plot(model_history.history['val_accuracy'])
+# # print(model_history.keys())
+# plt.plot(model_history['accuracy'])
+# plt.plot(model_history['val_accuracy'])
 # plt.title('model accuracy')
 # plt.ylabel('accuracy')
 # plt.xlabel('epoch')
 # plt.legend(['train', 'val'], loc='upper left')
 # plt.show()
 #
-# plt.plot(model_history.history['loss'])
-# plt.plot(model_history.history['val_loss'])
+# plt.plot(model_history['loss'])
+# plt.plot(model_history['val_loss'])
 # plt.title('model loss')
 # plt.ylabel('loss')
 # plt.xlabel('epoch')
@@ -242,47 +256,25 @@ cat_dog_model = keras.models.load_model('model/'+MODEL_NAME)
 # plt.show()
 
 
-"""Load model history and plot lost and acc"""
-with open('model/'+MODEL_NAME+'/trainHistoryDict', 'rb') as file_name:
-    model_history = pickle.load(file_name)
-
-# print(model_history.keys())
-plt.plot(model_history['accuracy'])
-plt.plot(model_history['val_accuracy'])
-plt.title('model accuracy')
-plt.ylabel('accuracy')
-plt.xlabel('epoch')
-plt.legend(['train', 'val'], loc='upper left')
-plt.show()
-
-plt.plot(model_history['loss'])
-plt.plot(model_history['val_loss'])
-plt.title('model loss')
-plt.ylabel('loss')
-plt.xlabel('epoch')
-plt.legend(['train', 'val'], loc='upper left')
-plt.show()
-
-
-print('\n@> Evaluating model')
-results = cat_dog_model.evaluate(X_test, Y_test, batch_size=32, verbose=1)
-print ("Loss = " + str(results[0]))
-print ("Test Accuracy = " + str(results[1]))
-
-
-print('\n@> Predicting Test Data')
-NUM_OF_PRED = 10
-pred = cat_dog_model.predict(X_test[:NUM_OF_PRED])
-
-for i in range(NUM_OF_PRED):
-    x = X_test[i]
-    p = pred[i]
-    plt.imshow(x)
-    if p[0] > p[1]:
-        plt.title("{:.4%} cat | {:.4%} dog -> CAT".format(p[0], p[1]))
-    else:
-        plt.title("{:.4%} cat | {:.4%} dog -> DOG".format(p[0], p[1]))
-
-    plt.show()
+# print('\n@> Evaluating model')
+# results = cat_dog_model.evaluate(X_test, Y_test, batch_size=32, verbose=1)
+# print ("Loss = " + str(results[0]))
+# print ("Test Accuracy = " + str(results[1]))
+#
+#
+# print('\n@> Predicting Test Data')
+# NUM_OF_PRED = 10
+# pred = cat_dog_model.predict(X_test[:NUM_OF_PRED])
+#
+# for i in range(NUM_OF_PRED):
+#     x = X_test[i]
+#     p = pred[i]
+#     plt.imshow(x)
+#     if p[0] > p[1]:
+#         plt.title("{:.4%} cat | {:.4%} dog -> CAT".format(p[0], p[1]))
+#     else:
+#         plt.title("{:.4%} cat | {:.4%} dog -> DOG".format(p[0], p[1]))
+#
+#     plt.show()
 
 
