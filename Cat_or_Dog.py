@@ -12,7 +12,9 @@ from keras.optimizers import Adam
 import tensorflow as tf
 from tensorflow import keras
 import pickle
-from Model12 import model12
+from ModelA1 import modelA1
+from model12 import model12
+from model14 import model14
 
 
 TRAIN_DIR = 'datasets/train'
@@ -214,22 +216,21 @@ print("Y_test shape : " + str(Y_val.shape))
 
 """CHANGE THESE TO SWITCH BETWEEN TRAINING AND LOADING"""
 NEW_MODEL = True
-MODEL_NAME = 'my_model_11a'
+MODEL_NAME = 'my_model_14'
 
 
 # Compile, Train, Save, Plot
 if NEW_MODEL:
     """Compile Model"""
-    cat_dog_model = model(X_train.shape[1:])
-    # cat_dog_model = model12(X_train.shape[1:])
+    # cat_dog_model = model(X_train.shape[1:])
+    cat_dog_model = model14(X_train.shape[1:])
     cat_dog_model.summary()
-    # !!! change learning rate of Adam
     opt = Adam(learning_rate=.0001)
     cat_dog_model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
 
 
     """Train the model"""
-    model_history = cat_dog_model.fit(x=X_train, y=Y_train, batch_size=32, epochs=15, validation_data=(X_val, Y_val), shuffle=True)  # val split should be .25
+    model_history = cat_dog_model.fit(x=X_train, y=Y_train, batch_size=32, epochs=20, validation_data=(X_val, Y_val), shuffle=True)  # val split should be .25
     #=== save the model ===
     cat_dog_model.save(filepath='model/'+MODEL_NAME)
 #=== Or load the model ===
