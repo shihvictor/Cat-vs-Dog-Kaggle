@@ -12,15 +12,17 @@ from keras.optimizers import Adam
 import tensorflow as tf
 from tensorflow import keras
 import pickle
-from ModelA1 import modelA1
-from model12 import model12
-from model14 import model14
-
+from model.my_model_15 import model15
+# from model.my_model_16 import model16
+# from model16 import model16
 
 TRAIN_DIR = 'datasets/train'
 TEST_DIR = 'datasets/test'
 IMG_SIZE = 64
 print(os.listdir(TRAIN_DIR))
+"""CHANGE THESE TO SWITCH BETWEEN TRAINING AND LOADING"""
+NEW_MODEL = True
+MODEL_NAME = 'model_15'
 
 
 def label_img(img_name):
@@ -34,6 +36,12 @@ def label_img(img_name):
     if word_label == 'cat': return [1,0]
     #                             [no cat, very doggo]
     elif word_label == 'dog': return [0,1]
+
+
+# def unison_shuffled_copies(a, b):
+#     assert len(a) == len(b)
+#     p = np.random.permutation(len(a))
+#     return a[p], b[p]
 
 
 def create_train_data():
@@ -70,24 +78,6 @@ def create_train_data():
     np.save('datasets/X_train_data.npy', X_train)
     np.save('datasets/Y_train_data.npy', Y_train)
     return X_train, Y_train
-
-
-# def create_train_data():
-#     training_data = []
-#     i = 0
-#     for img_name in tqdm(os.listdir(TRAIN_DIR)):
-#         label = np.array([label_img(img_name)])     # [] makes shape (1, 2) instead of (2,)
-#         image = np.array(plt.imread(TRAIN_DIR+'/'+img_name))
-#         resized_image = resize(image, [IMG_SIZE, IMG_SIZE, 3]) # resizes the dim of the image array to fit to CNN
-#         plt.imshow(resized_image, interpolation='nearest')
-#         plt.show()
-#         training_data.append([resized_image, label])
-#         i += 1
-#         if i == 5: break
-#     # shuffle(training_data)
-#     training_data = np.array(training_data)
-#     np.save('datasets/train_data.npy', training_data)
-#     return training_data
 
 
 def process_test_data():
@@ -155,20 +145,6 @@ def model(input_shape):
     return model
 
 
-# def partition_data(X_data, Y_data, part_amounts):
-#     """
-#
-#     :param X_data: Numpy array. All X data that the model will use
-#     :param Y_data: Numpy array. All X data that the model will use
-#     :param part_amounts: tuple
-#     :return: tuple of the partitions
-#     """
-#     M = X_data.shape[0]
-#
-#     if len([part_amounts]) == 1:
-#         return (X_data[0:int(M*.8), :])
-
-
 def plot_Acc_And_Loss(history_dict):
     """
     Plots loss and accuracy of train and val data over epochs.
@@ -181,6 +157,7 @@ def plot_Acc_And_Loss(history_dict):
     plt.xlabel('epoch')
     plt.legend(['train', 'val'], loc='upper left')
     plt.show()
+    plt.savefig("accuracy")
 
     plt.plot(history_dict['loss'])
     plt.plot(history_dict['val_loss'])
@@ -189,6 +166,7 @@ def plot_Acc_And_Loss(history_dict):
     plt.xlabel('epoch')
     plt.legend(['train', 'val'], loc='upper left')
     plt.show()
+    plt.savefig("loss")
 
 
 """ LOAD DATA """
@@ -214,16 +192,11 @@ print("X_test shape : " + str(X_val.shape))
 print("Y_test shape : " + str(Y_val.shape))
 
 
-"""CHANGE THESE TO SWITCH BETWEEN TRAINING AND LOADING"""
-NEW_MODEL = True
-MODEL_NAME = 'my_model_14'
-
-
 # Compile, Train, Save, Plot
 if NEW_MODEL:
     """Compile Model"""
     # cat_dog_model = model(X_train.shape[1:])
-    cat_dog_model = model14(X_train.shape[1:])
+    cat_dog_model = model15(X_train.shape[1:])
     cat_dog_model.summary()
     opt = Adam(learning_rate=.0001)
     cat_dog_model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
