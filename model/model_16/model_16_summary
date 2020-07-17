@@ -68,7 +68,7 @@ Total params: 2,289,314
 Trainable params: 2,288,354
 Non-trainable params: 960
 _________________________________________________________________
-lr=.0001
+lr=.0001, batch_size=32, epochs=20
 Epoch 1/20
 625/625 [==============================] - 228s 365ms/step - loss: 0.7196 - accuracy: 0.5627 - val_loss: 0.6884 - val_accuracy: 0.5358
 Epoch 2/20

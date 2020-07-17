@@ -8,13 +8,18 @@ from skimage.transform import resize
 from keras import layers
 from keras.layers import Input, ZeroPadding2D, Conv2D, MaxPooling2D, Dropout, Flatten, Dense, Activation, BatchNormalization
 from keras.models import Model
+from keras.callbacks import CSVLogger
 from keras.optimizers import Adam
 import tensorflow as tf
 from tensorflow import keras
 import pickle
+from pathlib import Path
 # from model.my_model_15 import model15
 # from model.my_model_16 import model16
 from model16 import model16
+from exp_model import exp_model
+
+
 
 TRAIN_DIR = 'datasets/train'
 TEST_DIR = 'datasets/test'
@@ -22,7 +27,7 @@ IMG_SIZE = 64
 # print(os.listdir(TRAIN_DIR))
 """CHANGE THESE TO SWITCH BETWEEN TRAINING AND LOADING"""
 NEW_MODEL = True
-MODEL_NAME = 'model_16_lr_00001'
+MODEL_NAME = 'exp_model'
 
 
 def label_img(img_name):
@@ -156,7 +161,7 @@ def plot_Acc_And_Loss(history_dict):
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
     plt.legend(['train', 'val'], loc='upper left')
-    plt.savefig('model/'+MODEL_NAME+'/'+MODEL_NAME+"_accuracy")
+    plt.savefig('model_logs/'+MODEL_NAME+'_logs/'+MODEL_NAME+"_accuracy.png")
     plt.show()
 
     plt.plot(history_dict['loss'])
@@ -165,7 +170,7 @@ def plot_Acc_And_Loss(history_dict):
     plt.ylabel('loss')
     plt.xlabel('epoch')
     plt.legend(['train', 'val'], loc='upper left')
-    plt.savefig('model/'+MODEL_NAME+'/'+MODEL_NAME+"_loss")
+    plt.savefig('model_logs/'+MODEL_NAME+'_logs/'+MODEL_NAME+"_loss.png")
     plt.show()
 
 
@@ -196,15 +201,16 @@ print("Y_test shape : " + str(Y_val.shape))
 if NEW_MODEL:
     """Compile Model"""
     # cat_dog_model = model(X_train.shape[1:])
-    cat_dog_model = model16(X_train.shape[1:])
-    cat_dog_model.summary()
-
-    opt = Adam(learning_rate=.0001)
-    cat_dog_model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
+    cat_dog_model = exp_model(X_train.shape[1:])      # Create model
+    cat_dog_model.summary()     # Print summary
+    opt = Adam(learning_rate=.0001)     # Set optimizer
+    cat_dog_model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])     # Compile model
 
 
     """Train the model"""
-    model_history = cat_dog_model.fit(x=X_train, y=Y_train, batch_size=32, epochs=20, validation_data=(X_val, Y_val), shuffle=True)  # val split should be .25
+    Path('model_logs/'+MODEL_NAME+'_logs/').mkdir(parents=True)
+    csv_logger = CSVLogger(filename='model_logs/'+MODEL_NAME+'_logs/'+MODEL_NAME+'_log.csv', separator=',', append=True)
+    model_history = cat_dog_model.fit(x=X_train, y=Y_train, batch_size=32, epochs=1, validation_data=(X_val, Y_val), shuffle=True, callbacks=[csv_logger])
     #=== save the model ===
     cat_dog_model.save(filepath='model/'+MODEL_NAME, overwrite=True)
 
@@ -213,11 +219,11 @@ if NEW_MODEL:
 
 
     """Save model history and plot loss and acc"""
-    with open('model/'+MODEL_NAME+'/trainHistoryDict', 'wb') as file_name: # opens file from /test1 and saves to file_pi
-        pickle.dump(model_history.history, file_name) # saves history to path file_pi
-    plot_Acc_And_Loss(model_history.history)
+    with open('model/'+MODEL_NAME+'/trainHistoryDict', 'wb') as file_name:
+        pickle.dump(model_history.history, file_name)       # Save history dict
+    plot_Acc_And_Loss(model_history.history)        # Plot acc and loss over epochs
 
-    with open('model/'+MODEL_NAME+'/'+MODEL_NAME+'_summary', 'w') as fh:
+    with open('model_logs/'+MODEL_NAME+'_logs/'+MODEL_NAME+'_summary', 'w') as fh:
         # Pass the file handle in as a lambda function to make it callable
         cat_dog_model.summary(print_fn=lambda x: fh.write(x + '\n'))
 
