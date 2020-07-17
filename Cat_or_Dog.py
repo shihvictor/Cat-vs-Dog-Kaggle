@@ -26,8 +26,8 @@ TEST_DIR = 'datasets/test'
 IMG_SIZE = 64
 # print(os.listdir(TRAIN_DIR))
 """CHANGE THESE TO SWITCH BETWEEN TRAINING AND LOADING"""
-NEW_MODEL = True
-MODEL_NAME = 'exp_model'
+NEW_MODEL = False
+MODEL_NAME = 'model_16'
 
 
 def label_img(img_name):
@@ -150,7 +150,7 @@ def model(input_shape):
     return model
 
 
-def plot_Acc_And_Loss(history_dict):
+def plot_Acc_And_Loss(history_dict, save=True):
     """
     Plots loss and accuracy of train and val data over epochs.
     :return:
@@ -161,7 +161,7 @@ def plot_Acc_And_Loss(history_dict):
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
     plt.legend(['train', 'val'], loc='upper left')
-    plt.savefig('model_logs/'+MODEL_NAME+'_logs/'+MODEL_NAME+"_accuracy.png")
+    if save: plt.savefig('model_logs/'+MODEL_NAME+'_logs/'+MODEL_NAME+"_accuracy.png")
     plt.show()
 
     plt.plot(history_dict['loss'])
@@ -170,7 +170,7 @@ def plot_Acc_And_Loss(history_dict):
     plt.ylabel('loss')
     plt.xlabel('epoch')
     plt.legend(['train', 'val'], loc='upper left')
-    plt.savefig('model_logs/'+MODEL_NAME+'_logs/'+MODEL_NAME+"_loss.png")
+    if save: plt.savefig('model_logs/'+MODEL_NAME+'_logs/'+MODEL_NAME+"_loss.png")
     plt.show()
 
 
@@ -180,7 +180,7 @@ def plot_Acc_And_Loss(history_dict):
 # === If train data .npy file already created, load it instead.
 X_data = np.load('datasets/X_train_data.npy')   #(2)
 Y_data = np.load('datasets/Y_train_data.npy')   #(2)
-
+X_test_data = np.load('datasets/X_test_data.npy')
 
 """ PARTITION DATA """
 M = X_data.shape[0]
@@ -190,11 +190,11 @@ X_val = X_data[int(M*.8):, :]
 Y_val = Y_data[int(M*.8):, :]
 
 print("number of training examples : " + str(X_train.shape[0]))
-print("number of test examples : " + str(X_val.shape[0]))
+print("number of val examples : " + str(X_val.shape[0]))
 print("X_train shape : " + str(X_train.shape))
 print("Y_train shape : " + str(Y_train.shape))
-print("X_test shape : " + str(X_val.shape))
-print("Y_test shape : " + str(Y_val.shape))
+print("X_val shape : " + str(X_val.shape))
+print("Y_val shape : " + str(Y_val.shape))
 
 
 # Compile, Train, Save, Plot
@@ -206,17 +206,12 @@ if NEW_MODEL:
     opt = Adam(learning_rate=.0001)     # Set optimizer
     cat_dog_model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])     # Compile model
 
-
     """Train the model"""
     Path('model_logs/'+MODEL_NAME+'_logs/').mkdir(parents=True)
     csv_logger = CSVLogger(filename='model_logs/'+MODEL_NAME+'_logs/'+MODEL_NAME+'_log.csv', separator=',', append=True)
     model_history = cat_dog_model.fit(x=X_train, y=Y_train, batch_size=32, epochs=1, validation_data=(X_val, Y_val), shuffle=True, callbacks=[csv_logger])
     #=== save the model ===
     cat_dog_model.save(filepath='model/'+MODEL_NAME, overwrite=True)
-
-#=== Or load the model ===
-# cat_dog_model = keras.models.load_model('model/'+MODEL_NAME)
-
 
     """Save model history and plot loss and acc"""
     with open('model/'+MODEL_NAME+'/trainHistoryDict', 'wb') as file_name:
@@ -227,33 +222,31 @@ if NEW_MODEL:
         # Pass the file handle in as a lambda function to make it callable
         cat_dog_model.summary(print_fn=lambda x: fh.write(x + '\n'))
 
-# else :
-"""Load model history and plot lost and acc"""
-# with open('model/'+MODEL_NAME+'/trainHistoryDict', 'rb') as file_name:
-#     model_history = pickle.load(file_name)
-# plot_Acc_And_Loss(model_history)
+else:
+    """Load the model"""
+    cat_dog_model = keras.models.load_model('model/'+MODEL_NAME)
 
+    """Load model history and plot loss and acc"""
+    with open('model/'+MODEL_NAME+'/trainHistoryDict', 'rb') as file_name:
+        model_history = pickle.load(file_name)
+    plot_Acc_And_Loss(model_history, save=False)    # Plot but don't save.
 
+    print('\n@> Evaluating model')
+    results = cat_dog_model.evaluate(X_val, Y_val, batch_size=32, verbose=1)
+    print ("Loss = " + str(results[0]))
+    print ("Test Accuracy = " + str(results[1]))
 
-# print('\n@> Evaluating model')
-# results = cat_dog_model.evaluate(X_test, Y_test, batch_size=32, verbose=1)
-# print ("Loss = " + str(results[0]))
-# print ("Test Accuracy = " + str(results[1]))
-#
-#
-# print('\n@> Predicting Test Data')
-# NUM_OF_PRED = 10
-# pred = cat_dog_model.predict(X_test[:NUM_OF_PRED])
-#
-# for i in range(NUM_OF_PRED):
-#     x = X_test[i]
-#     p = pred[i]
-#     plt.imshow(x)
-#     if p[0] > p[1]:
-#         plt.title("{:.4%} cat | {:.4%} dog -> CAT".format(p[0], p[1]))
-#     else:
-#         plt.title("{:.4%} cat | {:.4%} dog -> DOG".format(p[0], p[1]))
-#
-#     plt.show()
+    print('\n@> Predicting Test Data')
+    NUM_OF_PRED = 3
+    pred = cat_dog_model.predict(X_test_data[:NUM_OF_PRED])
 
+    for i in range(NUM_OF_PRED):
+        x = X_test_data[i]
+        p = pred[i]
+        plt.imshow(x)
+        if p[0] > p[1]:
+            plt.title("{:.4%} cat | {:.4%} dog -> CAT".format(p[0], p[1]))
+        else:
+            plt.title("{:.4%} cat | {:.4%} dog -> DOG".format(p[0], p[1]))
 
+        plt.show()
