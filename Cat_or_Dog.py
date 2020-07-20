@@ -14,10 +14,8 @@ import tensorflow as tf
 from tensorflow import keras
 import pickle
 from pathlib import Path
-# from model.my_model_15 import model15
-# from model.my_model_16 import model16
-from model16 import model16
-from exp_model import exp_model
+
+from model20 import model20
 
 
 
@@ -27,7 +25,7 @@ IMG_SIZE = 64
 # print(os.listdir(TRAIN_DIR))
 """CHANGE THESE TO SWITCH BETWEEN TRAINING AND LOADING"""
 NEW_MODEL = False
-MODEL_NAME = 'model_16'
+MODEL_NAME = 'model_20'
 
 
 def label_img(img_name):
@@ -87,7 +85,7 @@ def create_train_data():
 
 def process_test_data():
     X_test = []
-    i = 0
+    # i = 0
     for img_name in tqdm(os.listdir(TEST_DIR)):
         # read and resize img for ex i = x(i)
         image = np.array(plt.imread(TEST_DIR + '/' + img_name))
@@ -97,8 +95,8 @@ def process_test_data():
         # plt.show()
         # Save features and label
         X_test.append(x)
-        i += 1
-        if i == 5: break
+        # i += 1
+        # if i == 5: break
     # Uncomment this later to randomize order of imgs.
     # shuffle(training_data)
     X_test = np.array(X_test)
@@ -177,6 +175,7 @@ def plot_Acc_And_Loss(history_dict, save=True):
 """ LOAD DATA """
 # === Either have (1) or (2) commented.
 # X_data, Y_data = create_train_data()  # (1)
+process_test_data()
 # === If train data .npy file already created, load it instead.
 X_data = np.load('datasets/X_train_data.npy')   #(2)
 Y_data = np.load('datasets/Y_train_data.npy')   #(2)
@@ -195,13 +194,14 @@ print("X_train shape : " + str(X_train.shape))
 print("Y_train shape : " + str(Y_train.shape))
 print("X_val shape : " + str(X_val.shape))
 print("Y_val shape : " + str(Y_val.shape))
+print("X_test_data shape : " + str(X_test_data.shape))
 
 
 # Compile, Train, Save, Plot
 if NEW_MODEL:
     """Compile Model"""
     # cat_dog_model = model(X_train.shape[1:])
-    cat_dog_model = exp_model(X_train.shape[1:])      # Create model
+    cat_dog_model = model20(X_train.shape[1:])      # Create model
     cat_dog_model.summary()     # Print summary
     opt = Adam(learning_rate=.0001)     # Set optimizer
     cat_dog_model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])     # Compile model
@@ -209,7 +209,7 @@ if NEW_MODEL:
     """Train the model"""
     Path('model_logs/'+MODEL_NAME+'_logs/').mkdir(parents=True)
     csv_logger = CSVLogger(filename='model_logs/'+MODEL_NAME+'_logs/'+MODEL_NAME+'_log.csv', separator=',', append=True)
-    model_history = cat_dog_model.fit(x=X_train, y=Y_train, batch_size=32, epochs=1, validation_data=(X_val, Y_val), shuffle=True, callbacks=[csv_logger])
+    model_history = cat_dog_model.fit(x=X_train, y=Y_train, batch_size=32, epochs=30, validation_data=(X_val, Y_val), shuffle=True, callbacks=[csv_logger])
     #=== save the model ===
     cat_dog_model.save(filepath='model/'+MODEL_NAME, overwrite=True)
 
@@ -221,7 +221,6 @@ if NEW_MODEL:
     with open('model_logs/'+MODEL_NAME+'_logs/'+MODEL_NAME+'_summary', 'w') as fh:
         # Pass the file handle in as a lambda function to make it callable
         cat_dog_model.summary(print_fn=lambda x: fh.write(x + '\n'))
-
 else:
     """Load the model"""
     cat_dog_model = keras.models.load_model('model/'+MODEL_NAME)
@@ -237,8 +236,8 @@ else:
     print ("Test Accuracy = " + str(results[1]))
 
     print('\n@> Predicting Test Data')
-    NUM_OF_PRED = 3
-    pred = cat_dog_model.predict(X_test_data[:NUM_OF_PRED])
+    NUM_OF_PRED = 10
+    pred = cat_dog_model.predict(X_test_data)
 
     for i in range(NUM_OF_PRED):
         x = X_test_data[i]
@@ -248,5 +247,4 @@ else:
             plt.title("{:.4%} cat | {:.4%} dog -> CAT".format(p[0], p[1]))
         else:
             plt.title("{:.4%} cat | {:.4%} dog -> DOG".format(p[0], p[1]))
-
         plt.show()
