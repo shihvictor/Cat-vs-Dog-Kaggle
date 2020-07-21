@@ -14,9 +14,7 @@ import tensorflow as tf
 from tensorflow import keras
 import pickle
 from pathlib import Path
-
 from model20 import model20
-
 
 
 TRAIN_DIR = 'datasets/train'
@@ -25,7 +23,7 @@ IMG_SIZE = 64
 # print(os.listdir(TRAIN_DIR))
 """CHANGE THESE TO SWITCH BETWEEN TRAINING AND LOADING"""
 NEW_MODEL = False
-MODEL_NAME = 'model_20'
+MODEL_NAME = 'model_17'
 
 
 def label_img(img_name):
@@ -86,7 +84,10 @@ def create_train_data():
 def process_test_data():
     X_test = []
     # i = 0
-    for img_name in tqdm(os.listdir(TEST_DIR)):
+    test_imgs = os.listdir(TEST_DIR)
+    test_imgs.sort(key=lambda f: int(''.join(filter(str.isdigit, f))))
+
+    for img_name in tqdm(test_imgs):
         # read and resize img for ex i = x(i)
         image = np.array(plt.imread(TEST_DIR + '/' + img_name))
         x = resize(image, [IMG_SIZE, IMG_SIZE, 3])  # resizes the dim of the image array to fit to CNN
@@ -95,10 +96,10 @@ def process_test_data():
         # plt.show()
         # Save features and label
         X_test.append(x)
-        # i += 1
-        # if i == 5: break
+
+        # plt.imshow(x)
+        # plt.show()
     # Uncomment this later to randomize order of imgs.
-    # shuffle(training_data)
     X_test = np.array(X_test)
     np.save('datasets/X_test_data.npy', X_test)
     return X_test
@@ -181,6 +182,11 @@ X_data = np.load('datasets/X_train_data.npy')   #(2)
 Y_data = np.load('datasets/Y_train_data.npy')   #(2)
 X_test_data = np.load('datasets/X_test_data.npy')
 
+for i in range(10):
+    plt.imshow(X_test_data[i])
+    plt.show()
+
+
 """ PARTITION DATA """
 M = X_data.shape[0]
 X_train = X_data[0:int(M*.8), :]    # Train and cv data
@@ -230,10 +236,10 @@ else:
         model_history = pickle.load(file_name)
     plot_Acc_And_Loss(model_history, save=False)    # Plot but don't save.
 
-    print('\n@> Evaluating model')
-    results = cat_dog_model.evaluate(X_val, Y_val, batch_size=32, verbose=1)
-    print ("Loss = " + str(results[0]))
-    print ("Test Accuracy = " + str(results[1]))
+    # print('\n@> Evaluating model')
+    # results = cat_dog_model.evaluate(X_val, Y_val, batch_size=32, verbose=1)
+    # print ("Loss = " + str(results[0]))
+    # print ("Test Accuracy = " + str(results[1]))
 
     print('\n@> Predicting Test Data')
     NUM_OF_PRED = 10
@@ -248,3 +254,9 @@ else:
         else:
             plt.title("{:.4%} cat | {:.4%} dog -> DOG".format(p[0], p[1]))
         plt.show()
+
+    predictions=pd.DataFrame(data=pred[:,1], columns=['label'])
+    print(predictions.head())
+    predictions.index += 1
+    predictions.index.name = 'id'
+    predictions.to_csv('prediction.csv')
