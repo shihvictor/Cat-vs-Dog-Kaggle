@@ -3,9 +3,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 from tqdm import tqdm
-from PIL import Image
+# from PIL import Image
 from skimage.transform import resize
-from keras import layers
+# from keras import layers
 from keras.layers import Input, ZeroPadding2D, Conv2D, MaxPooling2D, Dropout, Flatten, Dense, Activation, BatchNormalization
 from keras.models import Model
 from keras.callbacks import CSVLogger
@@ -15,19 +15,42 @@ from tensorflow import keras
 import pickle
 from pathlib import Path
 from model20 import model20
+from keras.preprocessing.image import ImageDataGenerator
 
 
+
+""" CHANGE THESE TO SWITCH BETWEEN TRAINING AND LOADING """
+NEW_MODEL = True       # False if loading saved model. True if creating new model.
+MODEL_NAME = 'testmodel9_128_using_generator'
+
+""" HYPERPARAMETERS """
+IMG_SIZE = 128
+BATCH_SIZE = 32
+EPOCHS = 10
+
+""" FILE ..."""
 TRAIN_DIR = 'datasets/train'
 TEST_DIR = 'datasets/test'
-IMG_SIZE = 64
 # print(os.listdir(TRAIN_DIR))
-"""CHANGE THESE TO SWITCH BETWEEN TRAINING AND LOADING"""
-NEW_MODEL = False
-MODEL_NAME = 'model_17'
+
+def create_data_generators():
+    datagen = ImageDataGenerator(validation_split=.2)
+    train_generator = datagen.flow_from_directory(directory=TRAIN_DIR, target_size=(IMG_SIZE, IMG_SIZE), class_mode='categorical', batch_size=BATCH_SIZE, shuffle=True, subset='training')
+    validation_generator = datagen.flow_from_directory(directory=TRAIN_DIR, target_size=(IMG_SIZE, IMG_SIZE), class_mode='categorical', batch_size=BATCH_SIZE, shuffle=True, subset='validation')
+    # add test generator
+    batchX, batchY = validation_generator.next()
+    print('Batch shape=%s, min=%.3f, max=%.3f' % (batchX.shape, batchX.min(), batchX.max()))
+    for i in range(3):
+        img = batchX[i,:,:,:]
+        plt.imshow(img/255.)
+        label = batchY[i,:]
+        plt.title('label:'+str(label))
+        plt.show()
+    return train_generator, validation_generator
 
 
 def label_img(img_name):
-    """
+    """ Deprecated.
     Extracts the label of an image and converts the label to a one-hot vector
     :param img_name: name of format label.index.jpg
     :return: one-hot
@@ -46,7 +69,7 @@ def label_img(img_name):
 
 
 def create_train_data():
-    """
+    """ Deprecated.
     Changes images in the TRAIN_DIR directory to a numpy array
     :return: X_train : array of shape (m, IMG_SIZE, IMG_SIZE, 3)
     Y_train : array of shape (m, 2)
@@ -120,21 +143,18 @@ def model(input_shape):
     X = BatchNormalization(axis=3, name='bn_0')(X)
     X = Activation(activation='relu')(X)
     X = MaxPooling2D(pool_size=(2, 2), name='max_pool_0')(X)
-    X = Dropout(rate=.2)(X)
 
     # Block2
     X = Conv2D(filters=64, kernel_size=(5, 5), strides=1, name='conv2D_1')(X)
     X = BatchNormalization(axis=3, name='bn_1')(X)
     X = Activation(activation='relu')(X)
     X = MaxPooling2D(pool_size=(2, 2), name='max_pool_1')(X)
-    X = Dropout(rate=.2)(X)
 
     # Block3
     X = Conv2D(filters=128, kernel_size=(5, 5), strides=1, name='conv2D_2')(X)
     X = BatchNormalization(axis=3, name='bn_2')(X)
     X = Activation(activation='relu')(X)
     X = MaxPooling2D(pool_size=(2, 2), name='max_pool_2')(X)
-    X = Dropout(rate=.2)(X)
 
     # Flatten output of ReLU block
     X = Flatten()(X)
@@ -173,10 +193,38 @@ def plot_Acc_And_Loss(history_dict, save=True):
     plt.show()
 
 
-""" LOAD DATA """
+# Generates batches from datasets. (Saving the entire train set as (20k, 128, 128, 3) is too large to store in memory.
+# (64, 64, 3) imgs can fit.)
+train_generator, validation_generator = create_data_generators()
+# validation_dataset = tf.data.Dataset.from_generator(lambda:validation_generator, (tf.float32, tf.float32))
+if NEW_MODEL:
+    """Compile Model"""
+    cat_dog_model = model((IMG_SIZE, IMG_SIZE, 3))
+    cat_dog_model.summary()
+    opt = Adam(learning_rate=.0001)  # Set optimizer
+    cat_dog_model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])  # Compile model
+
+    """Train the model"""
+    Path('model_logs/'+MODEL_NAME+'_logs/').mkdir(parents=True)
+    csv_logger = CSVLogger(filename='model_logs/'+MODEL_NAME+'_logs/'+MODEL_NAME+'_log.csv', separator=',', append=True)
+    model_history = cat_dog_model.fit_generator(generator=train_generator, steps_per_epoch=train_generator.samples//BATCH_SIZE, epochs=EPOCHS, validation_data=validation_generator, validation_steps=validation_generator.samples//BATCH_SIZE, shuffle=True, callbacks=[csv_logger])
+    # model_history = cat_dog_model.fit(x=train_generator, epochs=EPOCHS, callbacks=[csv_logger], validation_data=validation_dataset, shuffle=True)
+    # === save the model ===
+    cat_dog_model.save(filepath='model/' + MODEL_NAME, overwrite=True)
+
+    """Save model history and plot loss and acc"""
+    with open('model/'+MODEL_NAME+'/trainHistoryDict', 'wb') as file_name:
+        pickle.dump(model_history.history, file_name)       # Save history dict
+    plot_Acc_And_Loss(model_history.history)        # Plot acc and loss over epochs
+
+    with open('model_logs/'+MODEL_NAME+'_logs/'+MODEL_NAME+'_summary', 'w') as fh:
+        # Pass the file handle in as a lambda function to make it callable
+        cat_dog_model.summary(print_fn=lambda x: fh.write(x + '\n'))
+""" Old loading and partitioning.
+# LOAD DATA
 # === Either have (1) or (2) commented.
 # X_data, Y_data = create_train_data()  # (1)
-process_test_data()
+# process_test_data()
 # === If train data .npy file already created, load it instead.
 X_data = np.load('datasets/X_train_data.npy')   #(2)
 Y_data = np.load('datasets/Y_train_data.npy')   #(2)
@@ -187,7 +235,7 @@ for i in range(10):
     plt.show()
 
 
-""" PARTITION DATA """
+# PARTITION DATA
 M = X_data.shape[0]
 X_train = X_data[0:int(M*.8), :]    # Train and cv data
 Y_train = Y_data[0:int(M*.8), :]
@@ -201,62 +249,62 @@ print("Y_train shape : " + str(Y_train.shape))
 print("X_val shape : " + str(X_val.shape))
 print("Y_val shape : " + str(Y_val.shape))
 print("X_test_data shape : " + str(X_test_data.shape))
+"""
 
-
-# Compile, Train, Save, Plot
-if NEW_MODEL:
-    """Compile Model"""
-    # cat_dog_model = model(X_train.shape[1:])
-    cat_dog_model = model20(X_train.shape[1:])      # Create model
-    cat_dog_model.summary()     # Print summary
-    opt = Adam(learning_rate=.0001)     # Set optimizer
-    cat_dog_model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])     # Compile model
-
-    """Train the model"""
-    Path('model_logs/'+MODEL_NAME+'_logs/').mkdir(parents=True)
-    csv_logger = CSVLogger(filename='model_logs/'+MODEL_NAME+'_logs/'+MODEL_NAME+'_log.csv', separator=',', append=True)
-    model_history = cat_dog_model.fit(x=X_train, y=Y_train, batch_size=32, epochs=30, validation_data=(X_val, Y_val), shuffle=True, callbacks=[csv_logger])
-    #=== save the model ===
-    cat_dog_model.save(filepath='model/'+MODEL_NAME, overwrite=True)
-
-    """Save model history and plot loss and acc"""
-    with open('model/'+MODEL_NAME+'/trainHistoryDict', 'wb') as file_name:
-        pickle.dump(model_history.history, file_name)       # Save history dict
-    plot_Acc_And_Loss(model_history.history)        # Plot acc and loss over epochs
-
-    with open('model_logs/'+MODEL_NAME+'_logs/'+MODEL_NAME+'_summary', 'w') as fh:
-        # Pass the file handle in as a lambda function to make it callable
-        cat_dog_model.summary(print_fn=lambda x: fh.write(x + '\n'))
-else:
-    """Load the model"""
-    cat_dog_model = keras.models.load_model('model/'+MODEL_NAME)
-
-    """Load model history and plot loss and acc"""
-    with open('model/'+MODEL_NAME+'/trainHistoryDict', 'rb') as file_name:
-        model_history = pickle.load(file_name)
-    plot_Acc_And_Loss(model_history, save=False)    # Plot but don't save.
-
-    # print('\n@> Evaluating model')
-    # results = cat_dog_model.evaluate(X_val, Y_val, batch_size=32, verbose=1)
-    # print ("Loss = " + str(results[0]))
-    # print ("Test Accuracy = " + str(results[1]))
-
-    print('\n@> Predicting Test Data')
-    NUM_OF_PRED = 10
-    pred = cat_dog_model.predict(X_test_data)
-
-    for i in range(NUM_OF_PRED):
-        x = X_test_data[i]
-        p = pred[i]
-        plt.imshow(x)
-        if p[0] > p[1]:
-            plt.title("{:.4%} cat | {:.4%} dog -> CAT".format(p[0], p[1]))
-        else:
-            plt.title("{:.4%} cat | {:.4%} dog -> DOG".format(p[0], p[1]))
-        plt.show()
-
-    predictions=pd.DataFrame(data=pred[:,1], columns=['label'])
-    print(predictions.head())
-    predictions.index += 1
-    predictions.index.name = 'id'
-    predictions.to_csv('prediction.csv')
+# # Compile, Train, Save, Plot
+# if NEW_MODEL:
+#     """Compile Model"""
+#     # cat_dog_model = model(X_train.shape[1:])
+#     cat_dog_model = model20(X_train.shape[1:])      # Create model
+#     cat_dog_model.summary()     # Print summary
+#     opt = Adam(learning_rate=.0001)     # Set optimizer
+#     cat_dog_model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])     # Compile model
+#
+#     """Train the model"""
+#     Path('model_logs/'+MODEL_NAME+'_logs/').mkdir(parents=True)
+#     csv_logger = CSVLogger(filename='model_logs/'+MODEL_NAME+'_logs/'+MODEL_NAME+'_log.csv', separator=',', append=True)
+#     model_history = cat_dog_model.fit(x=X_train, y=Y_train, batch_size=BATCH_SIZE, epochs=EPOCHS, validation_data=(X_val, Y_val), shuffle=True, callbacks=[csv_logger])
+#     #=== save the model ===
+#     cat_dog_model.save(filepath='model/'+MODEL_NAME, overwrite=True)
+#
+#     """Save model history and plot loss and acc"""
+#     with open('model/'+MODEL_NAME+'/trainHistoryDict', 'wb') as file_name:
+#         pickle.dump(model_history.history, file_name)       # Save history dict
+#     plot_Acc_And_Loss(model_history.history)        # Plot acc and loss over epochs
+#
+#     with open('model_logs/'+MODEL_NAME+'_logs/'+MODEL_NAME+'_summary', 'w') as fh:
+#         # Pass the file handle in as a lambda function to make it callable
+#         cat_dog_model.summary(print_fn=lambda x: fh.write(x + '\n'))
+# else:
+#     """Load the model"""
+#     cat_dog_model = keras.models.load_model('model/'+MODEL_NAME)
+#
+#     """Load model history and plot loss and acc"""
+#     with open('model/'+MODEL_NAME+'/trainHistoryDict', 'rb') as file_name:
+#         model_history = pickle.load(file_name)
+#     plot_Acc_And_Loss(model_history, save=False)    # Plot but don't save.
+#
+#     # print('\n@> Evaluating model')
+#     # results = cat_dog_model.evaluate(X_val, Y_val, batch_size=32, verbose=1)
+#     # print ("Loss = " + str(results[0]))
+#     # print ("Test Accuracy = " + str(results[1]))
+#
+#     print('\n@> Predicting Test Data')
+#     NUM_OF_PRED = 10
+#     pred = cat_dog_model.predict(X_test_data)
+#
+#     for i in range(NUM_OF_PRED):
+#         x = X_test_data[i]
+#         p = pred[i]
+#         plt.imshow(x)
+#         if p[0] > p[1]:
+#             plt.title("{:.4%} cat | {:.4%} dog -> CAT".format(p[0], p[1]))
+#         else:
+#             plt.title("{:.4%} cat | {:.4%} dog -> DOG".format(p[0], p[1]))
+#         plt.show()
+#
+#     predictions=pd.DataFrame(data=pred[:,1], columns=['label'])
+#     print(predictions.head())
+#     predictions.index += 1
+#     predictions.index.name = 'id'
+#     predictions.to_csv('prediction.csv')
