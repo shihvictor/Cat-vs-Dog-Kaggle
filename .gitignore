@@ -18,3 +18,12 @@ datasets/
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
+
+# Test modules
+fn_testing.py
+
+# Test results
+t0_results.csv
+
+# Deprecated fn/modules
+old_train_or_predict.py
