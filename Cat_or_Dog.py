@@ -15,12 +15,12 @@ from tensorflow import keras
 import pickle
 from pathlib import Path
 from keras.preprocessing.image import ImageDataGenerator
-from model_logs.model_20_logs import model20
+
 
 """ CHANGE THESE TO SWITCH BETWEEN TRAINING AND LOADING """
-NEW_MODEL = True      # False if loading saved model. True if creating new model.
-MODEL_NAME = 'model_20_128img_size' # model_number_description
-
+NEW_MODEL = False      # False if loading saved model. True if creating new model.
+MODEL_NAME = 'model_20_gpu'      # model_number_description
+PREDICT = True     # False to not predict and save predictions. True to predict and save predictions.
 """ HYPERPARAMETERS """
 IMG_SIZE = 128
 BATCH_SIZE = 32
@@ -44,17 +44,17 @@ def create_data_generators():
     predict_image_datagen = ImageDataGenerator(rescale=1./255)
     train_generator = train_image_datagen.flow_from_directory(directory=TRAIN_DIR, target_size=(IMG_SIZE, IMG_SIZE), class_mode='categorical', batch_size=BATCH_SIZE, shuffle=True)
     validation_generator = validation_image_datagen.flow_from_directory(directory=VALIDATION_DIR, target_size=(IMG_SIZE, IMG_SIZE), class_mode='categorical', batch_size=BATCH_SIZE, shuffle=False)
-    predict_generator = predict_image_datagen.flow_from_directory(directory=TEST_DIR, target_size=(IMG_SIZE, IMG_SIZE), class_mode=None, batch_size=1, shuffle=False)
+    predict_generator = predict_image_datagen.flow_from_directory(directory=TEST_DIR, target_size=(IMG_SIZE, IMG_SIZE), class_mode=None, batch_size=32, shuffle=False)
     # Displaying examples in first batch. (also debugging generators)
-    batchX, batchY = next(train_generator)  # get first batch of BATCH_SIZE examples.
+    batchX = next(predict_generator)  # get first batch of BATCH_SIZE examples.
     print('Batch shape=%s, min=%.3f, max=%.3f' % (batchX[0].shape, batchX[0].min(), batchX[0].max()))
-    for i in range(5):
-        img = batchX[i,:,:,:]
+    for i in range(3):
+        img = batchX[0,:,:,:]
         plt.imshow(img)
-        label = batchY[i,:]
-        plt.title('label:'+str(label))
+        # label = batchY[i,:]
+        # plt.title('label:'+str(label))
         plt.show()
-        batchX, batchY = train_generator.next()
+        batchX = predict_generator.next()
     return train_generator, validation_generator, predict_generator
 
 
@@ -164,19 +164,17 @@ else:
     # results = cat_dog_model.evaluate(x=validation_dataset, batch_size=32, verbose=1)
     # print ("Loss = " + str(results[0]))
     # print ("Test Accuracy = " + str(results[1]))
-#
-#     """Generate Predictions"""
-#     print('\n@> Predicting Test Data')
-#     NUM_OF_PRED = 5
-#     predict_generator.reset()
-#     t11 = predict_generator.samples
-#     pred = cat_dog_model.predict_generator(generator=predict_generator, steps=predict_generator.samples, verbose=1)
 
-    # filenames = [int(''.join(filter(str.isdigit, p))) for p in predict_generator.filenames]
-    # predictions = pd.DataFrame({"id": filenames, "label": pred[:, 1]})
-    # predictions.sort_values(by="id", inplace=True)
-    # predictions.reset_index(inplace=True)
-    # print(predictions.head())
-    # predictions.to_csv('unsorted_results.csv')
+    #     """Generate Predictions"""
+    print('\n@> Predicting Test Data')
+    NUM_OF_PRED = 5
+    predictions = cat_dog_model.predict(x=predict_generator, verbose=1)
+    formatted_predictions = predictions[:, 1]
+    filenames = np.array([int(''.join(filter(str.isdigit, p))) for p in predict_generator.filenames])
+    # f_index = filenames.reshape((filenames.shape[0]))
+    pred_df_unsorted = pd.DataFrame(data=formatted_predictions, index=filenames, columns=['label'])
+    pred_df = pred_df_unsorted.sort_index()
+    pred_df.index.name = 'id'
+    pred_df.to_csv('prediction_model_20_gpu.csv')
 
 print('DONE')
