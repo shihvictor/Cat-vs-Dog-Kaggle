@@ -8,19 +8,20 @@ from skimage.transform import resize
 from keras import layers
 from keras.layers import Input, ZeroPadding2D, Conv2D, MaxPooling2D, Dropout, Flatten, Dense, Activation, BatchNormalization
 from keras.models import Model
-from keras.callbacks import CSVLogger
+from keras.callbacks import CSVLogger, ModelCheckpoint
 from keras.optimizers import Adam
 import tensorflow as tf
 from tensorflow import keras
 import pickle
 from pathlib import Path
 from keras.preprocessing.image import ImageDataGenerator
+import model_21
 
 
 """ CHANGE THESE TO SWITCH BETWEEN TRAINING AND LOADING """
-NEW_MODEL = False      # False if loading saved model. True if creating new model.
-MODEL_NAME = 'model_20_gpu'      # model_number_description
-PREDICT = True     # False to not predict and save predictions. True to predict and save predictions.
+NEW_MODEL = True      # False if loading saved model. True if creating new model.
+MODEL_NAME = 'model_21'      # model_number_description
+PREDICT = False     # False to not predict and save predictions. True to predict and save predictions.
 """ HYPERPARAMETERS """
 IMG_SIZE = 128
 BATCH_SIZE = 32
@@ -129,18 +130,22 @@ train_generator, validation_generator, predict_generator = create_data_generator
 
 if NEW_MODEL:
     """Compile Model"""
-    cat_dog_model = model((IMG_SIZE, IMG_SIZE, 3))
+    cat_dog_model = model_21((IMG_SIZE, IMG_SIZE, 3))
     opt = Adam(learning_rate=.0001)  # Set optimizer
     cat_dog_model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])  # Compile model
     cat_dog_model.summary()
 
     """Train the model"""
-    Path('model_logs/'+MODEL_NAME+'_logs/').mkdir(parents=True) # need to delete this dir if terminate while running.
+    model_checkpoint = ModelCheckpoint(filepath='model/'+MODEL_NAME,
+                                       verbose=1,
+                                       monitor='val_loss',
+                                       save_best_only=True)     # Saves lowest val loss full model
+    Path('model_logs/'+MODEL_NAME+'_logs/').mkdir(parents=True)     # need to delete this dir if terminate while running.
     csv_logger = CSVLogger(filename='model_logs/'+MODEL_NAME+'_logs/'+MODEL_NAME+'_log.csv', separator=',', append=True)
     # model_history = cat_dog_model.fit_generator(generator=train_generator, steps_per_epoch=train_generator.samples//BATCH_SIZE, epochs=EPOCHS, validation_data=validation_generator, validation_steps=validation_generator.samples//BATCH_SIZE, shuffle=True, callbacks=[csv_logger])
-    model_history = cat_dog_model.fit(x=train_generator, epochs=EPOCHS, steps_per_epoch=20000//BATCH_SIZE, callbacks=[csv_logger], validation_data=validation_generator, validation_steps=5000//BATCH_SIZE)
+    model_history = cat_dog_model.fit(x=train_generator, epochs=EPOCHS, steps_per_epoch=20000//BATCH_SIZE, callbacks=[csv_logger, model_checkpoint], validation_data=validation_generator, validation_steps=5000//BATCH_SIZE)
     # === save the model ===
-    cat_dog_model.save(filepath='model/' + MODEL_NAME, overwrite=True)
+    # cat_dog_model.save(filepath='model/' + MODEL_NAME, overwrite=True)
 
     """Save model history and plot loss and acc"""
     with open('model/'+MODEL_NAME+'/trainHistoryDict', 'wb') as file_name:

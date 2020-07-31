@@ -2,7 +2,7 @@ from keras.layers import Input, ZeroPadding2D, Conv2D, MaxPooling2D, Dropout, Fl
 from keras.models import Model
 
 
-def model20(input_shape):
+def model_21(input_shape):
     """
     Keras model
     :return: Keras model using Keras functional API https://keras.io/guides/functional_api/
