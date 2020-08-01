@@ -18,11 +18,12 @@ from keras.preprocessing.image import ImageDataGenerator
 from model_21 import model_21
 from model_22 import model_22
 from model_23 import model_23
+from model_24 import model_24
 
 
 """ CHANGE THESE TO SWITCH BETWEEN TRAINING AND LOADING """
 NEW_MODEL = True      # False if loading saved model. True if creating new model.
-MODEL_NAME = 'model_21'      # model_number_description
+MODEL_NAME = 'model_24'      # model_number_description. If this is changed, make sure to change the compiled model.
 PREDICT = False     # False to not predict and save predictions. True to predict and save predictions.
 """ HYPERPARAMETERS """
 IMG_SIZE = 128
@@ -132,7 +133,7 @@ train_generator, validation_generator, predict_generator = create_data_generator
 
 if NEW_MODEL:
     """Compile Model"""
-    cat_dog_model = model_21((IMG_SIZE, IMG_SIZE, 3))
+    cat_dog_model = model_24((IMG_SIZE, IMG_SIZE, 3))
     opt = Adam(learning_rate=.0001)  # Set optimizer
     cat_dog_model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])  # Compile model
     cat_dog_model.summary()
