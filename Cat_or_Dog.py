@@ -16,6 +16,8 @@ import pickle
 from pathlib import Path
 from keras.preprocessing.image import ImageDataGenerator
 from model_21 import model_21
+from model_22 import model_22
+from model_23 import model_23
 
 
 """ CHANGE THESE TO SWITCH BETWEEN TRAINING AND LOADING """
