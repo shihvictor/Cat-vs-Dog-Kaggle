@@ -24,7 +24,7 @@ from model_25_more_reg import model_25_more_reg
 
 """ CHANGE THESE TO SWITCH BETWEEN TRAINING AND LOADING """
 NEW_MODEL = True      # False if loading saved model. True if creating new model.
-MODEL_NAME = 'model_25_more_reg'      # model_number_description. If this is changed, make sure to change the compiled model.
+MODEL_NAME = 'model_25_more_reg_64px'      # model_number_description. If this is changed, make sure to change the compiled model.
 PREDICT = False     # False to not predict and save predictions. True to predict and save predictions.
 """ HYPERPARAMETERS """
 IMG_SIZE = 128
