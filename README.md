@@ -34,7 +34,8 @@ https://www.jetbrains.com/pycharm/download/#section=mac
 ## Usage
 
 ## Project Progress
-#####Progress Summary
+Progress Summary
+
 This project began by constantly comparing and cross-referencing multiple sources in order to understand the different 
 methods to structure the project, the different methods of implementing data preprocessing, and the reasons for deciding
  to use each of these methods. 
@@ -45,3 +46,5 @@ training data into separate train, validation, and test sets.
 https://www.kaggle.com/uysimty/keras-cnn-dog-or-cat-classification/notebook#Virtualize-Training
 https://pythonprogramming.net/convolutional-neural-network-kats-vs-dogs-machine-learning-tutorial/
 https://towardsdatascience.com/image-classifier-cats-vs-dogs-with-convolutional-neural-networks-cnns-and-google-colabs-4e9af21ae7a8
+
+###### finish prog summary and include examples of model performance.
