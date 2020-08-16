@@ -3,7 +3,7 @@
 <!-- TABLE OF CONTENTS -->
 ## TABLE OF CONTENTS
 * [About the Project](#about-the-project)
-* [Installation](#asdf)
+* [Installation](#installation)
   * Git
     * for MacOS https://www.atlassian.com/git/tutorials/install-git#mac-os-x
     * for Windows https://www.atlassian.com/git/tutorials/install-git#windows
