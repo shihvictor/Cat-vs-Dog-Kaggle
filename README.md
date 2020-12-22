@@ -10,9 +10,8 @@
     * for Linux https://www.atlassian.com/git/tutorials/install-git#linux
   * Cloning the repository
   * Download Pycharm IDE
-* [Project Progress](#project-progress)
-  * Progress Summary
-  * Model Progress
+* [Development Summary](#project-progress)
+
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
