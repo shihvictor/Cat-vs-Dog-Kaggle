@@ -45,7 +45,10 @@ In terms of accuracy and loss, models 0 to 7 focused on reducing bias.
 
 Since both training accuracy and loss had begun to stagnate, models 8 and 9 focused on reducing variance. Batch normalization was added to model 9 which successfully reduced variance to 0.3430 from 1.268 in model 7. Models 10 to 13 experimented with zero padding and learning rate which resulted in a training loss of 0.3443 and a validation loss of 0.4426. The main decrease to variance occurred after the addition of a third dense layer in model 14, which saw a decrease from 0.0983 in model 13 (loss: 0.3443, val_loss: 0.4426) to 0.0132 in model 14 (loss: 0.4108, val_loss: 0.4240).
 
-Since the variance was low compared to the bias, model 15 tested the effects of same padding which produced the expected result of lowering bias (loss: 0.3689) since more of the original input features are propagated through the network.
+Since the variance was low compared to the bias, model 15 tested the effects of same padding which produced the expected result of lowering bias (loss: 0.3689) since more of the original input features are propagated through the network. Expanding from model 15, model 16 duplicated the number of conv2D layers which further reduced the bias from 0.3689 to 0.2295. 
+
+added csvlogger after model 16
+added modelcheckpoint after model 21
 
 models 0 to 16 also showed promising headroom for further model improvement. For instance  
 https://www.kaggle.com/uysimty/keras-cnn-dog-or-cat-classification/notebook#Virtualize-Training
@@ -54,3 +57,4 @@ https://towardsdatascience.com/image-classifier-cats-vs-dogs-with-convolutional-
 
 - [ ] finish prog summary 
 - [ ] include examples of model performance.
+- [ ] change bias and variance measurements to accuracy instead of loss?
