@@ -39,11 +39,13 @@ This project began by constantly comparing and cross-referencing multiple source
 
 At first, the labeled training and unlabeled test images were preprocessed into 64x64 px images and saved to a train.npy and test.npy file respectively. This was done in order to perform numpy array slicing to split the training data into separate training, validation, and test sets. From models 0 through 16, the primary improvements that were made to the project workflow include the addition of a model performance plotting function, which was used to analyze bias and variance using training and validation accuracy and loss; and automatic saving for trained models and model history, which was used alongside the plots to analyze the performance of new model iterations. 
 
-In terms of accuracy and loss, models 0 to 7 focused on reducing bias. 
+In terms of accuracy and loss, models 0 to 7 focused on reducing bias. Model 7 had a bias of 1.41% and a variance of 20.96%.
 ![asdf](/model_7_accuracy.png) 
 ![asdf](/model_7_loss.png)
 
-Since both training accuracy and loss had begun to stagnate, models 8 and 9 focused on reducing variance. Batch normalization was added to model 9 which successfully reduced variance to 0.3430 from 1.268 in model 7. Models 10 to 13 experimented with zero padding and learning rate which resulted in a training loss of 0.3443 and a validation loss of 0.4426. The main decrease to variance occurred after the addition of a third dense layer in model 14, which saw a decrease from 0.0983 in model 13 (loss: 0.3443, val_loss: 0.4426) to 0.0132 in model 14 (loss: 0.4108, val_loss: 0.4240).
+Since both training accuracy and loss had begun to stagnate, models 8 and 9 focused on reducing variance. Batch normalization was added to model 9 which successfully reduced variance to 8.71% from 20.96% in model 7. 
+
+Models 10 to 13 experimented with zero padding and learning rate which resulted in a reduced variance of 2.75%. The main decrease to variance occurred in model 14 after the addition of a third dense layer which achieved 0.34% variance.
 
 Since the variance was low compared to the bias, model 15 tested the effects of same padding which produced the expected result of lowering bias (loss: 0.3689) since more of the original input features are propagated through the network. Expanding from model 15, model 16 duplicated the number of conv2D layers which further reduced the bias from 0.3689 to 0.2295. 
 
