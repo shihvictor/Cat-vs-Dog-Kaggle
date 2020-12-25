@@ -43,13 +43,19 @@ In terms of accuracy and loss, models 0 to 7 focused on reducing bias. Model 7 h
 ![asdf](/model_7_accuracy.png) 
 ![asdf](/model_7_loss.png)
 
-Since both training accuracy and loss had begun to stagnate, models 8 and 9 focused on reducing variance. Batch normalization was added to model 9 which successfully reduced variance to 8.71% from 20.96% in model 7. 
+Since both training accuracy and loss had begun to stagnate, models 8 and 9 focused on reducing variance. Batch normalization was added to model 9 which successfully reduced variance to 8.71% from 20.96% in model 7. (model 9 bias = 5.69%, variance = 8.71%)
 
-Models 10 to 13 experimented with zero padding and learning rate which resulted in a reduced variance of 2.75%. The main decrease to variance occurred in model 14 after the addition of a third dense layer which achieved 0.34% variance.
+Models 10 to 13 experimented with zero padding and learning rate which resulted in a reduced variance of 2.75%. The main decrease to variance occurred in model 14 after the addition of a third dense layer which achieved 0.34% variance. (model 14 bias = 18.84%, variance = 0.34%)
 
-Since the variance was low compared to the bias, model 15 tested the effects of same padding which produced the expected result of lowering bias (loss: 0.3689) since more of the original input features are propagated through the network. Expanding from model 15, model 16 duplicated the number of conv2D layers which further reduced the bias from 0.3689 to 0.2295. 
+Since the variance was low compared to the bias, model 15 tested the effects of same padding which produced the expected result of lowering bias since more of the original input features are propagated through the network (model 15 bias = 16.40%, variance = 0.44%). To further reduce bias, the number of conv2D layers were duplicated which increased the model's ability to better fit the training set. (model 16 bias = 9.62%, variance = 7.08%)
 
-added csvlogger after model 16
+After model 16, I discovered keras.callbacks and used csvlogger to auto log the epoch, accuracy, loss, validation accuracy, and validation loss. However, csvlogger did not save the time taken for each epoch and each step like the result of `model.summary`. Therefore, along with auto logging, I implemented summary saving, and automatic loss and accuracy plot saving.
+
+At this point, each epoch of the 20 epochs took around 227 seconds which corresponded to a total of 4540 seconds which is about 75.67 minutes. Therefore, I studied TensorFlows use with a GPU (link here) and modified my workflow so that all implementation would be done on my Mac and all model training/testing would be done on my PC.
+
+
+
+
 added modelcheckpoint after model 21
 
 models 0 to 16 also showed promising headroom for further model improvement. For instance  
