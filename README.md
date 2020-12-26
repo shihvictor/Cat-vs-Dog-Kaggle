@@ -41,9 +41,9 @@ At first, the labeled training and unlabeled test images were preprocessed into 
 
 In terms of accuracy and loss, models 0 to 7 focused on reducing bias. Model 7 had a bias of 1.41% and a variance of 20.96%.
 ![asdf](/model_7_accuracy.png) 
-![asdf](/model_7_loss.png)
 
 Since both training accuracy and loss had begun to stagnate, models 8 and 9 focused on reducing variance. Batch normalization was added to model 9 which successfully reduced variance to 8.71% from 20.96% in model 7. (model 9 bias = 5.69%, variance = 8.71%)
+![asdf](/model_9_accuracy.png) 
 
 Models 10 to 13 experimented with zero padding and learning rate which resulted in a reduced variance of 2.75%. The main decrease to variance occurred in model 14 after the addition of a third dense layer which achieved 0.34% variance. (model 14 bias = 18.84%, variance = 0.34%)
 
