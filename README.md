@@ -40,12 +40,14 @@ This project began by constantly comparing and cross-referencing multiple source
 At first, the labeled training and unlabeled test images were preprocessed into 64x64 px images and saved to a train.npy and test.npy file respectively. This was done in order to perform numpy array slicing to split the training data into separate training, validation, and test sets. From models 0 through 16, the primary improvements that were made to the project workflow include the addition of a model performance plotting function, which was used to analyze bias and variance using training and validation accuracy and loss; and automatic saving for trained models and model history, which was used alongside the plots to analyze the performance of new model iterations. 
 
 In terms of accuracy and loss, models 0 to 7 focused on reducing bias. Model 7 had a bias of 1.41% and a variance of 20.96%.
-![asdf](/model_7_accuracy.png) 
+![a](/model_7_accuracy.png) 
 
 Since both training accuracy and loss had begun to stagnate, models 8 and 9 focused on reducing variance. Batch normalization was added to model 9 which successfully reduced variance to 8.71% from 20.96% in model 7. (model 9 bias = 5.69%, variance = 8.71%)
-![asdf](/model_9_accuracy.png) 
+![b](/model_9_accuracy.png) 
 
 Models 10 to 13 experimented with zero padding and learning rate which resulted in a reduced variance of 2.75%. The main decrease to variance occurred in model 14 after the addition of a third dense layer which achieved 0.34% variance. (model 14 bias = 18.84%, variance = 0.34%)
+
+![c](/model_14_accuracy.png)
 
 Since the variance was low compared to the bias, model 15 tested the effects of same padding which produced the expected result of lowering bias since more of the original input features are propagated through the network (model 15 bias = 16.40%, variance = 0.44%). To further reduce bias, the number of conv2D layers were duplicated which increased the model's ability to better fit the training set. (model 16 bias = 9.62%, variance = 7.08%)
 
@@ -62,6 +64,8 @@ models 0 to 16 also showed promising headroom for further model improvement. For
 https://www.kaggle.com/uysimty/keras-cnn-dog-or-cat-classification/notebook#Virtualize-Training
 https://pythonprogramming.net/convolutional-neural-network-kats-vs-dogs-machine-learning-tutorial/
 https://towardsdatascience.com/image-classifier-cats-vs-dogs-with-convolutional-neural-networks-cnns-and-google-colabs-4e9af21ae7a8
+
+###### TLDR
 
 - [ ] finish prog summary 
 - [ ] include examples of model performance.
