@@ -49,7 +49,11 @@ Models 10 to 13 experimented with zero padding and learning rate which resulted 
 
 ![c](/model_14_accuracy.png)
 
-Since the variance was low compared to the bias, model 15 tested the effects of same padding which produced the expected result of lowering bias since more of the original input features are propagated through the network (model 15 bias = 16.40%, variance = 0.44%). To further reduce bias, the number of conv2D layers were duplicated which increased the model's ability to better fit the training set. (model 16 bias = 9.62%, variance = 7.08%)
+Since the variance was low compared to the bias, model 15 added another conv2D block and tested the effects of same padding. The version without same padding and the additional conv2D block produced the expected result of decreased bias and increased variance from the parameter count increase. On the other hand, because same padding uses the edge pixels more often and maintains the input shape, less information was lost when propagating the input through each conv2D layer. Therefore, the version with same padding and the additional conv2D block resulted in lowered bias and maintained a low variance. (model 15 bias = 16.40%, variance = 0.44%). 
+![Without same padding](/model_14_accuracy.png) ![With same padding](/model_14_accuracy.png)
+
+To further reduce bias, the number of conv2D layers were duplicated which increased the model's ability to better fit the training set. (model 16 bias = 9.62%, variance = 7.08%)
+
 
 After model 16, I discovered keras.callbacks and used csvlogger to auto log the epoch, accuracy, loss, validation accuracy, and validation loss. However, csvlogger did not save the time taken for each epoch and each step like the result of `model.summary`. Therefore, along with auto logging, I implemented summary saving, and automatic loss and accuracy plot saving.
 
