@@ -50,7 +50,12 @@ Models 10 to 13 experimented with zero padding and learning rate which resulted 
 ![c](/model_14_accuracy.png)
 
 Since the variance was low compared to the bias, model 15 added another conv2D block and tested the effects of same padding. The version without same padding and the additional conv2D block produced the expected result of decreased bias and increased variance from the parameter count increase. On the other hand, because same padding uses the edge pixels more often and maintains the input shape, less information was lost when propagating the input through each conv2D layer. Therefore, the version with same padding and the additional conv2D block resulted in lowered bias and maintained a low variance. (model 15 bias = 16.40%, variance = 0.44%). 
-![Without same padding](/model_14_accuracy.png) ![With same padding](/model_14_accuracy.png)
+With Same Padding             |  Without Same Padding
+:-------------------------:|:-------------------------:
+![](/model_15_accuracy_wo_same_pad.png)  |  ![](/model_15_accuracy_w_same_pad.png)
+
+
+
 
 To further reduce bias, the number of conv2D layers were duplicated which increased the model's ability to better fit the training set. (model 16 bias = 9.62%, variance = 7.08%)
 
@@ -74,3 +79,4 @@ https://towardsdatascience.com/image-classifier-cats-vs-dogs-with-convolutional-
 - [ ] finish prog summary 
 - [ ] include examples of model performance.
 - [ ] change bias and variance measurements to accuracy instead of loss?
+- [ ] format images `<img src="/model_15_accuracy_wo_same_pad.png" width="450">`
