@@ -32,7 +32,7 @@ https://www.jetbrains.com/pycharm/download/#section=mac
 
 ## Usage
 
-
+<!-- Development Summary -->
 ## Development Summary 
 
 This project began by constantly comparing and cross-referencing multiple sources in order to understand the different methods to structure the project, the different methods of implementing data preprocessing, and the reasons for deciding to use each of these methods. 
@@ -40,25 +40,27 @@ This project began by constantly comparing and cross-referencing multiple source
 At first, the labeled training and unlabeled test images were preprocessed into 64x64 px images and saved to a train.npy and test.npy file respectively. This was done in order to perform numpy array slicing to split the training data into separate training, validation, and test sets. From models 0 through 16, the primary improvements that were made to the project workflow include the addition of a model performance plotting function, which was used to analyze bias and variance using training and validation accuracy and loss; and automatic saving for trained models and model history, which was used alongside the plots to analyze the performance of new model iterations. 
 
 In terms of accuracy and loss, models 0 to 7 focused on reducing bias. Model 7 had a bias of 1.41% and a variance of 20.96%.
-![a](/model_7_accuracy.png) 
+
+<p align="center"><img src="/model_7_accuracy.png" width="450"></p>
 
 Since both training accuracy and loss had begun to stagnate, models 8 and 9 focused on reducing variance. Batch normalization was added to model 9 which successfully reduced variance to 8.71% from 20.96% in model 7. (model 9 bias = 5.69%, variance = 8.71%)
-![b](/model_9_accuracy.png) 
+
+<p align="center"><img src="/model_9_accuracy.png" width="450"></p>
 
 Models 10 to 13 experimented with zero padding and learning rate which resulted in a reduced variance of 2.75%. The main decrease to variance occurred in model 14 after the addition of a third dense layer which achieved 0.34% variance. (model 14 bias = 18.84%, variance = 0.34%)
 
-![c](/model_14_accuracy.png)
+<p align="center"><img src="/model_14_accuracy.png" width="450"></p>
 
-Since the variance was low compared to the bias, model 15 added another conv2D block and tested the effects of same padding. The version without same padding and the additional conv2D block produced the expected result of decreased bias and increased variance from the parameter count increase. On the other hand, because same padding uses the edge pixels more often and maintains the input shape, less information was lost when propagating the input through each conv2D layer. Therefore, the version with same padding and the additional conv2D block resulted in lowered bias and maintained a low variance. (model 15 bias = 16.40%, variance = 0.44%). 
+Since the variance was low compared to the bias, model 15 added another conv2D block and tested the effects of same padding. The version without same padding and the additional conv2D block produced the expected result of decreased bias and increased variance from the parameter count increase. On the other hand, because same padding uses the edge pixels more often and maintains the input shape, less information is lost when propagating the input through each conv2D layer. Therefore, the version with same padding and the additional conv2D block resulted in lowered bias and maintained a low variance. (model 15 w/ same padding: bias = 16.40%, variance = 0.44%). 
+
 With Same Padding             |  Without Same Padding
 :-------------------------:|:-------------------------:
 ![](/model_15_accuracy_wo_same_pad.png)  |  ![](/model_15_accuracy_w_same_pad.png)
 
+Since increasing the number of parameters would improve the model's fit to the training set and therefore decrease bias, the number of conv2D layers were duplicated like so. (model 16 bias = 9.62%, variance = 7.08%)
 
-
-
-To further reduce bias, the number of conv2D layers were duplicated which increased the model's ability to better fit the training set. (model 16 bias = 9.62%, variance = 7.08%)
-
+(add sample of new conv2d block architecture here)
+<p align="center"><img src="/model_16_accuracy.png" width="450"></p>
 
 After model 16, I discovered keras.callbacks and used csvlogger to auto log the epoch, accuracy, loss, validation accuracy, and validation loss. However, csvlogger did not save the time taken for each epoch and each step like the result of `model.summary`. Therefore, along with auto logging, I implemented summary saving, and automatic loss and accuracy plot saving.
 
@@ -80,3 +82,4 @@ https://towardsdatascience.com/image-classifier-cats-vs-dogs-with-convolutional-
 - [ ] include examples of model performance.
 - [ ] change bias and variance measurements to accuracy instead of loss?
 - [ ] format images `<img src="/model_15_accuracy_wo_same_pad.png" width="450">`
+- [ ] add sample of new conv2d block line 57
