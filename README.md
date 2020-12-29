@@ -71,13 +71,16 @@ At this point, each epoch of the 20 epochs took around 227 seconds which corresp
 
 added modelcheckpoint after model 21
 
-models 0 to 16 also showed promising headroom for further model improvement. For instance  
+models 0 to 16 also showed promising headroom for further model improvement. For instance ...
+
+###### REFERENCES
 https://www.kaggle.com/uysimty/keras-cnn-dog-or-cat-classification/notebook#Virtualize-Training
 https://pythonprogramming.net/convolutional-neural-network-kats-vs-dogs-machine-learning-tutorial/
 https://towardsdatascience.com/image-classifier-cats-vs-dogs-with-convolutional-neural-networks-cnns-and-google-colabs-4e9af21ae7a8
 
 ###### TLDR
 
+###### TODO
 - [ ] finish prog summary 
 - [ ] include examples of model performance.
 - [ ] change bias and variance measurements to accuracy instead of loss?
