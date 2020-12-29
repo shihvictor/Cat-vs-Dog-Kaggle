@@ -62,6 +62,7 @@ Since increasing the number of parameters would improve the model's fit to the t
 (add sample of new conv2d block architecture here)
 <p align="center"><img src="/model_16_accuracy.png" width="450"></p>
 
+
 After model 16, I discovered keras.callbacks and used csvlogger to auto log the epoch, accuracy, loss, validation accuracy, and validation loss. However, csvlogger did not save the time taken for each epoch and each step like the result of `model.summary`. Therefore, along with auto logging, I implemented summary saving, and automatic loss and accuracy plot saving.
 
 At this point, each epoch of the 20 epochs took around 227 seconds which corresponded to a total of 4540 seconds which is about 75.67 minutes. Therefore, I studied TensorFlows use with a GPU (link here) and modified my workflow so that all implementation would be done on my Mac and all model training/testing would be done on my PC.
@@ -69,7 +70,7 @@ At this point, each epoch of the 20 epochs took around 227 seconds which corresp
 
 
 
-added modelcheckpoint after model 21
+(added modelcheckpoint after model 21) At this point, I observed from the plots that each models' training history could vary significantly while the general trend of loss and accuracy is improving. For several models, such as model 16, there is an epoch before the final epoch where the validation accuracy is higher. This prompted me to explore the methods used that could eliminate this discrepancy and resulted in me utilizing the keras callback ModelCheckpoint, which (descr function).
 
 models 0 to 16 also showed promising headroom for further model improvement. For instance ...
 
