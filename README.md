@@ -57,7 +57,7 @@ With Same Padding             |  Without Same Padding
 :-------------------------:|:-------------------------:
 ![](/model_15_accuracy_wo_same_pad.png)  |  ![](/model_15_accuracy_w_same_pad.png)
 
-Since increasing the number of parameters would improve the model's fit to the training set and therefore decrease bias, the number of conv2D layers were duplicated like so. (model 16 bias = 9.62%, variance = 7.08%)
+Since increasing the number of parameters would improve the model's fit to the training set and therefore decrease bias, the number of conv2D layers were duplicated like so. (model 16 bias = 9.75%, variance = 1.55%)
 
 (add sample of new conv2d block architecture here)
 <p align="center"><img src="/model_16_accuracy.png" width="450"></p>
@@ -65,9 +65,12 @@ Since increasing the number of parameters would improve the model's fit to the t
 
 After model 16, I added keras callbacks and used csvlogger to auto log the epoch, accuracy, loss, validation accuracy, and validation loss. However, csvlogger did not save the time taken for each epoch and each step like the result of `model.summary`. Therefore, along with auto logging, I implemented summary saving, and automatic loss and accuracy plot saving.
 
-At this point, each epoch of the 20 epochs took around 227 seconds which corresponded to a total of 4540 seconds which is about 75.67 minutes. To increase model iteration and analysis speed, I did some quick research on the justifications for using GPUs in deep learning and modified my workflow so that all implementation would be done on my Mac and all model training/testing would be done on my Windows PC using a GTX 970. 
+At this point, each epoch of the 20 epochs took around 227 seconds which corresponded to a total of 4540 seconds which is about 75.67 minutes. To increase model iteration and analysis speed, I did some quick research on the justifications for using GPUs in deep learning and modified my workflow so that all implementation would be done on my Mac and all model training/testing would be done on my Windows PC using a GTX 970. Furthermore, each subsequent model iteration displayed less and less accuracy and loss plateauing near the ends of their training epochs and validation epochs. Thus, model 17 tested the use of tensorflow gpu and an increased epoch. (model 17 bias = 7.66%, variance = 1.58%, avg time per epoch = 235s) (model 17 gpu bias = 7.65%, variance = 1.79%, avg time per epoch = 14s)
+* *Note that the [Model Checkpoint callback](https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/ModelCheckpoint) has not yet been used when training. This callback is later added after model 21.*
 
-
+Using CPU             |  Using GPU
+:-------------------------:|:-------------------------:
+![](/model_15_accuracy_wo_same_pad.png)  |  ![](/model_15_accuracy_w_same_pad.png)
 
 
 
@@ -88,3 +91,4 @@ https://towardsdatascience.com/image-classifier-cats-vs-dogs-with-convolutional-
 - [ ] change bias and variance measurements to accuracy instead of loss?
 - [ ] format images `<img src="/model_15_accuracy_wo_same_pad.png" width="450">`
 - [ ] add sample of new conv2d block line 57
+- [ ] line 69 - add link to "model 21"
