@@ -1,6 +1,5 @@
 # Cat-vs-Dog-Kaggle
 
-<!-- TABLE OF CONTENTS -->
 ## TABLE OF CONTENTS
 * [About the Project](#about-the-project)
 * [Installation](#installation)
@@ -10,14 +9,14 @@
     * for Linux https://www.atlassian.com/git/tutorials/install-git#linux
   * Cloning the repository
   * Download Pycharm IDE
-* [Development Summary](#Development-Summary)
+* [Development Summary](#development-summary)
 
 
-<!-- ABOUT THE PROJECT -->
+
 ## About The Project
 This project was created after completion of the Deep Learning by deeplearning.ai on Coursera specialization in order to apply the learned concepts and techniques from the Convolutional Neural Network course. [More details on development process here.](#development-summary)
 
-<!-- Installation -->
+
 ## Installation
 Git
 * for MacOS https://www.atlassian.com/git/tutorials/install-git#mac-os-x
@@ -32,7 +31,7 @@ https://www.jetbrains.com/pycharm/download/#section=mac
 
 ## Usage
 
-<!-- Development Summary -->
+
 ## Development Summary 
 
 This project began by constantly comparing and cross-referencing multiple sources in order to understand the different methods to structure the project, the different methods of implementing data preprocessing, and the reasons for deciding to use each of these methods. 
@@ -66,7 +65,7 @@ Since increasing the number of parameters would improve the model's fit to the t
 After model 16, I added keras callbacks and used csvlogger to auto log the epoch, accuracy, loss, validation accuracy, and validation loss. However, csvlogger did not save the time taken for each epoch and each step like the result of `model.summary`. Therefore, along with auto logging, I implemented summary saving, and automatic loss and accuracy plot saving.
 
 At this point, each epoch of the 20 epochs took around 227 seconds which corresponded to a total of 4540 seconds which is about 75.67 minutes. To increase model iteration and analysis speed, I did some quick research on the justifications for using GPUs in deep learning and modified my workflow so that all implementation would be done on my Mac and all model training/testing would be done on my Windows PC using a GTX 970. Furthermore, each subsequent model iteration displayed less and less accuracy and loss plateauing near the ends of their training epochs and validation epochs. Thus, model 17 tested the use of tensorflow gpu and an increased epoch. (model 17 bias = 7.66%, variance = 1.58%, avg time per epoch = 235s) (model 17 gpu bias = 7.65%, variance = 1.79%, avg time per epoch = 14s)
-* *Note that the [Model Checkpoint callback](https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/ModelCheckpoint) has not yet been used when training. This callback is later added after model 21.*
+* *Note that the [Model Checkpoint callback](https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/ModelCheckpoint) has not yet been used when training. This callback is later added after model 21 [Contribution guidelines for this project](docs/CONTRIBUTING.md).*
 
 <p align="center"><img src="/model_17_gpu_accuracy.png" width="450"></p>
 
