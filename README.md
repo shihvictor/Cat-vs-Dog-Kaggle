@@ -70,11 +70,23 @@ _(model 16 bias = 9.75%, variance = 1.55%)_
 After model 16, I added keras callbacks and used csvlogger to auto log the epoch, accuracy, loss, validation accuracy, and validation loss. However, csvlogger did not save the time taken for each epoch and each step like the result of `model.summary`. Therefore, along with auto logging, I implemented summary saving, and automatic loss and accuracy plot saving.
 
 ###### Model 17
-At this point, each epoch of the 20 epochs took around 227 seconds which corresponded to a total of 4540 seconds which is about 75.67 minutes. To increase model iteration and analysis speed, I did some quick research on the justifications for using GPUs in deep learning and modified my workflow so that all implementation would be done on my Mac and all model training/testing would be done on my Windows PC using a GTX 970. Furthermore, each subsequent model iteration displayed less and less accuracy and loss plateauing near the ends of their training epochs and validation epochs. Thus, model 17 tested the use of tensorflow gpu and an increased epoch.  
+At this point, each epoch of the 20 epochs took around 227 seconds which corresponded to a total of 4540 seconds which is about 75.67 minutes. To increase model iteration and analysis speed, I did some quick research on the justifications for using GPUs in deep learning and modified my workflow so that all implementation would be done on my Mac and all model training/testing would be done on my Windows PC using a GTX 970. Furthermore, each subsequent model iteration displayed less and less accuracy and loss plateauing near the ends of their training epochs and validation epochs. Thus, model 17 tested the use of tensorflow gpu and an increased epoch number.  
 _(model 17 bias = 7.66%, variance = 1.58%, avg time per epoch = 235s)  
 (model 17 gpu bias = 7.65%, variance = 1.79%, avg time per epoch = 14s)_  
 * _Note that the [Model Checkpoint callback](https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/ModelCheckpoint) has not yet been used when training. This callback is later added after [model 21]()._  
 <p align="center"><img src="/model_17_gpu_accuracy.png" width="450"></p>
+
+###### Model 18
+While the previous model's loss and accuracy plots began to plateau off, the graphs still showed a slight improving trend, which indicates a need for an increased epoch number to achieve the maximum performance for a model. Fortunately, utilizing a GPU for model training significantly decreased the training time which promotes the use of a larger amount of epochs.  
+_(model 18 gpu bias = 7.14%%, variance = 4.08%)_  
+<p align="center"><img src="/model_18_accuracy.png" width="450"></p>
+
+###### Model 19
+This model removed dropout on the conv blocks to verify the effects of dropout. 
+
+###### Model 20
+
+
 
 (added modelcheckpoint after model 21) At this point, I observed from the plots that each models' training history could vary significantly while the general trend of loss and accuracy is improving. For several models, such as model 16, there is an epoch before the final epoch where the validation accuracy is higher. This prompted me to explore the methods used that could eliminate this discrepancy and resulted in me utilizing the keras callback ModelCheckpoint, which (descr function).
 
