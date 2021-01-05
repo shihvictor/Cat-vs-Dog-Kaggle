@@ -78,13 +78,23 @@ _(model 17 bias = 7.66%, variance = 1.58%, avg time per epoch = 235s)
 
 ###### Model 18
 While the previous model's loss and accuracy plots began to plateau off, the graphs still showed a slight improving trend, which indicates a need for an increased epoch number to achieve the maximum performance for a model. Fortunately, utilizing a GPU for model training significantly decreased the training time which promotes the use of a larger amount of epochs.  
-_(model 18 gpu bias = 7.14%%, variance = 4.08%)_  
+_(model 18 bias = 7.14%, variance = 4.08%)_  
 <p align="center"><img src="/model_18_accuracy.png" width="450"></p>
 
 ###### Model 19
 This model removed dropout on the conv blocks to verify the effects of dropout. 
 
 ###### Model 20
+Models 17 and 18 still resulted in a relatively high bias when compared to the variance. Since increasing the number of features would help the model fit better to the training set, resulting in reduced bias, the model input shape was changed from 64x64x3 to 128x128x3.  
+_(model 20 bias = 9.72%, variance = 4.32%)_  
+<p align="center"><img src="/model_logs/model_20_128img_size_logs/model_20_128img_size_accuracy.png" width="450"></p>  
+Interestingly, this increase in the number of features resulted in the opposite effect of increasing the bias instead of decreasing the bias, even when accounting for the lack of the Model Checkpoint callback.
+
+###### Model 21
+Since increasing the number of features did not provide the expected result for model 20, I tested increasing the number of parameters in the dense layers to improve the decision making of the model, which expectedly decreased the bias. Specifically, the number of units in the 1st dense layer was doubled from 256 to 512.  
+_(model 21 bias = 6.17%, variance = 1.14%)_  
+<p align="center"><img src="/model_logs/model_21_logs/model_21_accuracy.png" width="450"></p>
+
 
 
 
