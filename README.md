@@ -103,6 +103,7 @@ _For model 21, the training epoch corresponding to the lowest validation loss ha
 ###### Model 22
 Now that the weights associated with the lowest validation loss would be saved, model 22 continued to expand upon model 21's architecture by appending another conv block before the dense layers, which resulted in lowered bias but increased variance.  
 _(model 22 bias = 3.61%, variance = 2.68%)_  
+<p align="center"><img src="/model_logs/model_22_logs/model_22_accuracy.png" width="450"></p>
 
 ###### REFERENCES
 https://www.kaggle.com/uysimty/keras-cnn-dog-or-cat-classification/notebook#Virtualize-Training
