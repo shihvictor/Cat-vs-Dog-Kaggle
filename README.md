@@ -9,8 +9,10 @@
     * for Linux https://www.atlassian.com/git/tutorials/install-git#linux
   * Cloning the repository
   * Download Pycharm IDE
+* [Usage](#usage)
 * [Development Summary](#development-summary)
-
+* [Final Models](#final-models)
+* [References](#references)
 
 
 ## About The Project
@@ -95,9 +97,12 @@ Since increasing the number of features did not provide the expected result for 
 _(model 21 bias = 6.17%, variance = 1.14%)_  
 <p align="center"><img src="/model_logs/model_21_logs/model_21_accuracy.png" width="450"></p>
 
-At this point, I observed from the accuracy and loss plots that each models' training accuracy and loss would vary significantly even though the general trend of loss and accuracy was improving. For several models, such as model 16, there are epochs before the final epoch where the bias, variance, or both are lower. This prompted me to research methods that could eliminate this discrepancy and resulted in me utilizing the keras callback ModelCheckpoint to save the weights associated with the lowest validation loss.
+At this point, I observed from the accuracy and loss plots that each models' training accuracy and loss would vary significantly even though the general trend of loss and accuracy was improving. For several models, such as model 16, there are epochs before the final epoch where the bias, variance, or both are lower. This prompted me to research methods that could eliminate this discrepancy and resulted in the utilization of the keras callback ModelCheckpoint to save the weights associated with the epoch with the lowest validation loss.
+_For model 21, the training epoch corresponding to the lowest validation loss has: (bias = 7.39%, variance = 0.32%)_
 
-
+###### Model 22
+Now that the weights associated with the lowest validation loss would be saved, model 22 continued to expand upon model 21's architecture by appending another conv block before the dense layers, which resulted in lowered bias but increased variance.  
+_(model 22 bias = 3.61%, variance = 2.68%)_  
 
 ###### REFERENCES
 https://www.kaggle.com/uysimty/keras-cnn-dog-or-cat-classification/notebook#Virtualize-Training
