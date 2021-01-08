@@ -105,6 +105,23 @@ Now that the weights associated with the lowest validation loss would be saved, 
 _(model 22 bias = 3.61%, variance = 2.68%)_  
 <p align="center"><img src="/model_logs/model_22_logs/model_22_accuracy.png" width="450"></p>
 
+###### Model 23 
+Even though model 22 had higher bias, model 23 halved the number of activation elements in the first dense layer to increase regularization and decrease variance.  
+_(model 23 bias = 4.69%, variance = 1.38%)_  
+<p align="center"><img src="" width="450"></p>
+
+###### Model 24
+(added conv block, doubled num of units in first dense layer)
+
+_(model 24 bias = 2.72%, variance = 2.41%)_  
+<p align="center"><img src="" width="450"></p>
+
+###### Model 25
+(24 to 25 - incr Dropout_6 rate from .5 to .6)
+
+_(model 25 bias = 2.67%, variance = 2.88%)_  
+<p align="center"><img src="" width="450"></p>
+
 ###### REFERENCES
 https://www.kaggle.com/uysimty/keras-cnn-dog-or-cat-classification/notebook#Virtualize-Training
 https://pythonprogramming.net/convolutional-neural-network-kats-vs-dogs-machine-learning-tutorial/
