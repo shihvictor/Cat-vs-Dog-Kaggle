@@ -25,11 +25,15 @@ Git
 * for Windows https://www.atlassian.com/git/tutorials/install-git#windows
 * for Linux https://www.atlassian.com/git/tutorials/install-git#linux
 
-Cloning the repository
+Cloning the repository  
 https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository
 
-Download Pycharm IDE
+Using VS Code or Pycharm IDE  
+https://code.visualstudio.com/docs/python/python-tutorial
 https://www.jetbrains.com/pycharm/download/#section=mac
+
+Setting Up Version Control in VS Code  
+https://code.visualstudio.com/docs/editor/versioncontrol#_git-support
 
 ## Usage
 
