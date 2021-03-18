@@ -107,24 +107,24 @@ _For model 21, the training epoch corresponding to the lowest validation loss ha
 
 ###### Model 22
 Now that the weights associated with the lowest validation loss would be saved, model 22 continued to expand upon model 21's architecture by appending another conv block before the dense layers, which resulted in lowered bias but increased variance.  
-_(model 22 bias = 3.61%, variance = 2.68% | training accuracy = , validation accuracy = )_  
+_(model 22 bias = 3.61%, variance = 2.68% | training accuracy = 96.39%, validation accuracy = 93.71%)_  
 <p align="center"><img src="/model_logs/model_22_logs/model_22_accuracy.png" width="450"></p>
 
 ###### Model 23 
 Since model 22 had higher bias, model 23 tested the effects of halving the number of activation elements in the first dense layer which resulted in...  
-_(model 23 bias = 4.69%, variance = 1.38% | training accuracy = , validation accuracy = )_  
+_(model 23 bias = 4.69%, variance = 1.38% | training accuracy = 95.31%, validation accuracy = 93.93%)_  
 <p align="center"><img src="/model_logs/model_23_logs/model_23_accuracy.png" width="450"></p>
 
 ###### Model 24
 (added conv block, doubled num of units in first dense layer)
 
-_(model 24 bias = 2.72%, variance = 2.41% | training accuracy = , validation accuracy = )_  
+_(model 24 bias = 2.72%, variance = 2.41% | training accuracy = 97.28%, validation accuracy = 94.87%)_  
 <p align="center"><img src="model_logs/model_24_logs/model_24_accuracy.png" width="450"></p>
 
 ###### Model 25
 (24 to 25 - incr Dropout_6 rate from .5 to .6)
 
-_(model 25 bias = 2.67%, variance = 2.88% | training accuracy = , validation accuracy = )_  
+_(model 25 bias = 2.67%, variance = 2.88% | training accuracy = 97.33%, validation accuracy = 94.45%)_  
 <p align="center"><img src="model_logs/model_25_logs/model_25_accuracy.png" width="450"></p>
 
 ###### REFERENCES
