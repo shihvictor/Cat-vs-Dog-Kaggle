@@ -11,7 +11,7 @@
   * Download Pycharm IDE
 * [Usage](#usage)
 * [Development Summary](#development-summary)
-* [Final Models](#final-models)
+* [Final Model](#final-model)
 * [References](#references)
 
 
@@ -102,7 +102,7 @@ Since increasing the number of features did not provide the expected result for 
 _(model 21 bias = 6.17%, variance = 1.14% | training accuracy = 93.83%, validation accuracy = 92.69%)_  
 <p align="center"><img src="/model_logs/model_21_logs/model_21_accuracy.png" width="450"></p>
 
-At this point, I observed from the accuracy and loss plots that each models' training accuracy and loss would vary significantly even though the general trend of loss and accuracy was improving. For several models, such as model 16, there are epochs before the final epoch where the bias, variance, or both are lower. This prompted me to research methods that could eliminate this discrepancy and resulted in the utilization of the keras callback ModelCheckpoint to save the weights associated with the epoch with the lowest validation loss.
+At this point, I observed from the accuracy and loss plots that each models' training accuracy and loss would vary significantly even though the general trend of loss and accuracy was improving. For several models, such as model 16, there are epochs before the final epoch where the bias, variance, or both are lower. This prompted me to research methods that could eliminate this discrepancy and resulted in the utilization of the keras callback ModelCheckpoint to save the weights associated with the epoch with the lowest validation loss.  
 _For model 21, the training epoch corresponding to the lowest validation loss has: (bias = 7.39%, variance = 0.32% | training accuracy = 92.61%, validation accuracy = 92.93%)_
 
 ###### Model 22
@@ -111,19 +111,22 @@ _(model 22 bias = 3.61%, variance = 2.68% | training accuracy = 96.39%, validati
 <p align="center"><img src="/model_logs/model_22_logs/model_22_accuracy.png" width="450"></p>
 
 ###### Model 23 
-While model 22 had higher bias than variance, model 23 successfully verified that reducing the number of weights increased bias. To achieve this result, the number of activation elements in the first dense layer was halved.
+While model 22 had higher bias than variance, model 23 successfully verified that reducing the number of weights increased bias. To achieve this result, the number of activation elements in the first dense layer was halved.  
 _(model 23 bias = 4.69%, variance = 1.38% | training accuracy = 95.31%, validation accuracy = 93.93%)_  
 <p align="center"><img src="/model_logs/model_23_logs/model_23_accuracy.png" width="450"></p>
 
 ###### Model 24
-Complementing the result of model 23, model 24 successfully verified that increasing the number of weights reduced bias. To achieve this result, the number of activation elements in the first dense layer of Model 22 was doubled.
+Complementing the result of model 23, model 24 successfully verified that increasing the number of weights reduced bias. To achieve this result, the number of activation elements in the first dense layer of Model 22 was doubled.  
 _(model 24 bias = 2.72%, variance = 2.41% | training accuracy = 97.28%, validation accuracy = 94.87%)_  
 <p align="center"><img src="model_logs/model_24_logs/model_24_accuracy.png" width="450"></p>
 
 ###### Model 25
-Even though model 24 had higher bias than variance, model 25 increased the dropout rate to better generalize the model. Unfortunately, this produced an unexpected result of decreased bias and increased variance. Therefore, further tests are needed to determine the reasons for this discrepancy.
+Even though model 24 had higher bias than variance, model 25 increased the dropout rate to better generalize the model. Unfortunately, this produced an unexpected result of decreased bias and increased variance. Therefore, further tests are needed to determine the reasons for this discrepancy.  
 _(model 25 bias = 2.67%, variance = 2.88% | training accuracy = 97.33%, validation accuracy = 94.45%)_  
 <p align="center"><img src="model_logs/model_25_logs/model_25_accuracy.png" width="450"></p>
+
+## Final Model
+
 
 ###### REFERENCES
 https://www.kaggle.com/uysimty/keras-cnn-dog-or-cat-classification/notebook#Virtualize-Training
