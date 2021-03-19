@@ -111,19 +111,17 @@ _(model 22 bias = 3.61%, variance = 2.68% | training accuracy = 96.39%, validati
 <p align="center"><img src="/model_logs/model_22_logs/model_22_accuracy.png" width="450"></p>
 
 ###### Model 23 
-Since model 22 had higher bias, model 23 tested the effects of halving the number of activation elements in the first dense layer which resulted in...  
+While model 22 had higher bias than variance, model 23 successfully verified that reducing the number of weights increased bias. To achieve this result, the number of activation elements in the first dense layer was halved.
 _(model 23 bias = 4.69%, variance = 1.38% | training accuracy = 95.31%, validation accuracy = 93.93%)_  
 <p align="center"><img src="/model_logs/model_23_logs/model_23_accuracy.png" width="450"></p>
 
 ###### Model 24
-(added conv block, doubled num of units in first dense layer)
-
+Complementing the result of model 23, model 24 successfully verified that increasing the number of weights reduced bias. To achieve this result, the number of activation elements in the first dense layer of Model 22 was doubled.
 _(model 24 bias = 2.72%, variance = 2.41% | training accuracy = 97.28%, validation accuracy = 94.87%)_  
 <p align="center"><img src="model_logs/model_24_logs/model_24_accuracy.png" width="450"></p>
 
 ###### Model 25
-(24 to 25 - incr Dropout_6 rate from .5 to .6)
-
+Even though model 24 had higher bias than variance, model 25 increased the dropout rate to better generalize the model. Unfortunately, this produced an unexpected result of decreased bias and increased variance. Therefore, further tests are needed to determine the reasons for this discrepancy.
 _(model 25 bias = 2.67%, variance = 2.88% | training accuracy = 97.33%, validation accuracy = 94.45%)_  
 <p align="center"><img src="model_logs/model_25_logs/model_25_accuracy.png" width="450"></p>
 
