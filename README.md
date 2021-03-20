@@ -126,7 +126,7 @@ _(model 25 bias = 2.67%, variance = 2.88% | training accuracy = 97.33%, validati
 <p align="center"><img src="model_logs/model_25_logs/model_25_accuracy.png" width="450"></p>
 
 ## Final Model
-
+Overall, the optimal model would be 
 
 ###### REFERENCES
 https://www.kaggle.com/uysimty/keras-cnn-dog-or-cat-classification/notebook#Virtualize-Training
