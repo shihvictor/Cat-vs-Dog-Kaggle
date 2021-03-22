@@ -137,8 +137,8 @@ https://towardsdatascience.com/image-classifier-cats-vs-dogs-with-convolutional-
 ###### TLDR
 ...
 ###### TODO
-- [ ] add acc alongside bias and variance (model 22 and beyond)
+- [x] add acc alongside bias and variance (model 22 and beyond)
 - [ ] finish prog summary 
-- [ ] format images `<img src="/model_15_accuracy_wo_same_pad.png" width="450">`
+- [x] format images `<img src="/model_15_accuracy_wo_same_pad.png" width="450">`
 - [ ] add sample of new conv2d block line 57
-- [ ] line 69 - add link to "model 21"
+- [x] line 69 - add link to "model 21"
