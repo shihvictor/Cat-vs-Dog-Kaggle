@@ -126,7 +126,8 @@ _(model 25 bias = 2.67%, variance = 2.88% | training accuracy = 97.33%, validati
 <p align="center"><img src="model_logs/model_25_logs/model_25_accuracy.png" width="450"></p>
 
 ## Final Model
-Overall, the optimal model would be 
+Model 24 had the highest validation accuracy at 94.87%. [Click here for the summary and training history](model_logs/model_24_logs/model_24_summary).  
+Since the accuracy and loss of this model plateaus near the end of the 30 epochs, further improvements would need to be implemented to obtain better accuracy. From the previous network models, it is evident that there are many effective ways from which a model's performance can be improved. In fact, other data preprocessing methods; such mirroring, rotating, and warping the images; could be used to further increase the amount of data used in training which would theoretically improve the training accuracy of the model. By doing so, more headroom would be made for regularization which could increase the validation accuracy. 
 
 ###### REFERENCES
 https://www.kaggle.com/uysimty/keras-cnn-dog-or-cat-classification/notebook#Virtualize-Training
